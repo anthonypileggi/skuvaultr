@@ -13,8 +13,8 @@ sv_get_sales <- function(start_date = Sys.Date() - 1, end_date = Sys.Date() - 1)
       UserToken = Sys.getenv("SKU_VAULT_USER_TOKEN"),
       PageSize = 10000,
       PageNumber = -1,
-      FromDate = paste0(start_date, "T00:00:00.0000000Z"),
-      ToDate = paste0(end_date, "T23:59:59.0000000Z")
+      FromDate = paste0(start_date, "T05:00:00.0000000Z"),     # times in UTC
+      ToDate = paste0(end_date + 1, "T04:59:59.0000000Z")
     )
 
   # Iterate to get all sales for the requested period
@@ -29,5 +29,12 @@ sv_get_sales <- function(start_date = Sys.Date() - 1, end_date = Sys.Date() - 1)
     if (length(new_sales) < my_json$PageSize)
       go <- FALSE
   }
-  sv_parse_response(sales)
+
+  # Clean data
+  # clean-up data
+  dplyr::mutate(
+    sv_parse_response(sales),
+    SaleDate = as.POSIXct(strptime(SaleDate, "%Y-%m-%dT%H:%M:%OSZ"), tz = "UTC"),
+    SaleDate = lubridate::with_tz(SaleDate, tzone = Sys.timezone())
+  )
 }
