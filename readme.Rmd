@@ -1,0 +1,39 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/"
+)
+set.seed(101315)
+```
+
+
+# skuvaultr
+
+
+## Overview
+
+Access the SkuVault API using R.
+  
+## Installation
+
+```{r, eval = FALSE}
+# Install development version from GitHub
+devtools::install_github("anthonypileggi/skuvaultr")
+```
+
+
+## Setup
+
+To use, you'll first need to get access and set these environment variables.
+
+```{r, eval = FALSE}
+SKU_VAULT_EMAIL = "me@email.com"
+SKU_VAULT_PASSWORD = "password"
+```
