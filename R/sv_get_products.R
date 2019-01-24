@@ -16,5 +16,11 @@ sv_get_products <- function() {
     if (length(new_products) < pg_size)
       go <- FALSE
   }
-  sv_parse_response(products)
+  #sv_parse_response(products)
+
+  # parse respose
+  products %>%
+    sv_parse_response() %>%
+    dplyr::mutate_at(c("CreatedDateUtc", "ModifiedDateUtc"), sv_parse_datetime)
+
 }

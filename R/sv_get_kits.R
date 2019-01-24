@@ -1,38 +1,35 @@
 #' Get kits
+#' @importFrom magrittr "%>%"
 #' @export
 sv_get_kits <- function() {
 
-  if (nchar(Sys.getenv("SKU_VAULT_TENANT_TOKEN")) == 0 | nchar(Sys.getenv("SKU_VAULT_USER_TOKEN")) == 0)
-    sv_get_tokens()
-
-  my_json <-
-    list(
-      TenantToken = Sys.getenv("SKU_VAULT_TENANT_TOKEN"),
-      UserToken = Sys.getenv("SKU_VAULT_USER_TOKEN"),
-      PageSize = 10000,
-      PageNumber = -1,
-      GetAvailableQuantity = TRUE,
-      IncludeKitCost = TRUE
-    )
-
-  # Iterate to get a full list of products
+  # Iterate to get a full list of kits
   go <- TRUE
+  pg <- -1
+  pg_size <- 10000
   products <- list()
   while (go) {
-    my_json$PageNumber <- my_json$PageNumber + 1
-    message("Getting page ", my_json$PageNumber + 1, " of kit data.")
-    r <- httr::POST("https://app.skuvault.com/api/products/getKits", body = my_json, encode = "json")
+    pg <- pg + 1
+    message("Getting page ", pg + 1, " of kit data.")
+    r <- sv_api("products/getKits", PageSize = pg_size, PageNumber = pg,
+                GetAvailableQuantity = TRUE, IncludeKitCost = TRUE)
     new_products <- httr::content(r)$Kits
     products <- c(products, new_products)
-    if (length(new_products) < my_json$PageSize)
+    if (length(new_products) < pg_size)
       go <- FALSE
   }
-  sv_parse_response(products)
-}
+  #sv_parse_response(products)
 
-# - getIncomingItems
-# - getPOs
-# - Create 'scripts'
-#   - top customers x spend
-#   - sales by product age
-#   - dead inventory (product not sold X days vs. AvailableQuantityLastMOdifiedDateTimeUtc)
+  # parse response as tibble
+  purrr::map_df(
+    products,
+    function(r) {
+      vars <- names(r)[purrr::map_lgl(r, ~length(.x) == 1)]        # TODO: this ignores entries with > 1 length (e.g., multiple suppliers)
+      tmp <- tibble::as_tibble(r[vars])
+      r$KitLines <- purrr::map_df(r$KitLines, rlang::squash)       # TODO: get multi-item kits
+      tmp$KitLines <- list(dplyr::as_tibble(r$KitLines))
+      tmp
+    }
+  ) %>%
+    dplyr::mutate_at(c("LastModifiedDateTimeUtc", "AvailableQuantityLastModifiedDateTimeUtc"), sv_parse_datetime)
+}
