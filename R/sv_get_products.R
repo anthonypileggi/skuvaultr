@@ -21,6 +21,7 @@ sv_get_products <- function() {
   # parse respose
   products %>%
     sv_parse_response() %>%
-    dplyr::mutate_at(c("CreatedDateUtc", "ModifiedDateUtc"), sv_parse_datetime)
+    dplyr::mutate_at(c("CreatedDateUtc", "ModifiedDateUtc"), sv_parse_datetime) %>%
+    dplyr::mutate_at("WeightValue", as.numeric)
 
 }
