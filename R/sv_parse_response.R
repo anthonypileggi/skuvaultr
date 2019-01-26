@@ -13,6 +13,7 @@ sv_parse_response <- function(response) {
   purrr::map_df(
     response,
     function(r) {
+      #vars <- names(r)[purrr::map_lgl(r, ~!is.list(.x))]
       vars <- names(r)[purrr::map_lgl(r, ~length(.x) == 1)]        # TODO: this ignores entries with > 1 length (e.g., multiple suppliers)
       tmp <- tibble::as_tibble(r[vars])
       for (v in c("SupplierInfo", "KitLines")) {                                  # format list objects as tibbles
@@ -20,6 +21,14 @@ sv_parse_response <- function(response) {
           r[[v]] <- purrr::map_df(r[[v]], rlang::squash)
           tmp[[v]] <- list(dplyr::as_tibble(r[[v]]))
         }
+      }
+      for (v in c("FulfilledKits", "MerchantKits")) {
+        if (v %in% names(r))
+          tmp[[v]] <- list(sv_parse_kit(r[[v]]))
+      }
+      for (v in c("FulfilledItems", "MerchantItems")) {
+        if (v %in% names(r))
+          tmp[[v]] <- list(sv_parse_item(r[[v]]))
       }
       tmp
     }
