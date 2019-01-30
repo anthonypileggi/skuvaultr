@@ -1,6 +1,6 @@
 #' Parse a list of items
 sv_parse_item <- function(x) {
-  purrr::map(x,
+  purrr::map_df(x,
     function(aa) {
       dplyr::tibble(
         Sku = aa$Sku,
