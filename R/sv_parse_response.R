@@ -30,6 +30,8 @@ sv_parse_response <- function(response) {
         if (v %in% names(r))
           tmp[[v]] <- list(sv_parse_item(r[[v]]))
       }
+      if ("ProcessedItems" %in% names(r))
+        tmp[["ProcessedItems"]] <- list(purrr::map_df(r[["ProcessedItems"]], dplyr::as_tibble))
       tmp
     }
   )
