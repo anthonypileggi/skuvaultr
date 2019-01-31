@@ -1,6 +1,6 @@
 #' Get products
 #' @export
-sv_get_products <- function() {
+sv_get_products <- function(skus = NULL) {
 
   # Iterate to get a full list of products
   go <- TRUE
@@ -10,13 +10,19 @@ sv_get_products <- function() {
   while (go) {
     pg <- pg + 1
     message("Getting page ", pg + 1, " of product data.")
-    r <- sv_api("products/getProducts", PageSize = pg_size, PageNumber = pg)
+    r <- sv_api("products/getProducts", PageSize = pg_size, PageNumber = pg, ProductSKUs = skus)
     new_products <- httr::content(r)$Products
     products <- c(products, new_products)
     if (length(new_products) < pg_size)
       go <- FALSE
   }
   #sv_parse_response(products)
+
+  # exit early if there is no data
+  if (length(products) == 0) {
+    message("No products matching the requested SKUs were found.")
+    return(NULL)
+  }
 
   # parse respose
   products %>%
