@@ -4,7 +4,7 @@
 \alias{sv_get_products}
 \title{Get products}
 \usage{
-sv_get_products()
+sv_get_products(skus = NULL)
 }
 \description{
 Get products

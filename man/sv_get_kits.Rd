@@ -4,7 +4,7 @@
 \alias{sv_get_kits}
 \title{Get kits}
 \usage{
-sv_get_kits()
+sv_get_kits(skus = NULL)
 }
 \description{
 Get kits
