@@ -3,22 +3,14 @@
 #' @export
 sv_get_kits <- function(skus = NULL) {
 
-  # Iterate to get a full list of kits
-  go <- TRUE
-  pg <- -1
-  pg_size <- 10000
-  products <- list()
-  while (go) {
-    pg <- pg + 1
-    message("Getting page ", pg + 1, " of kit data.")
-    r <- sv_api("products/getKits", PageSize = pg_size, PageNumber = pg,
-                KitSKUs = skus, GetAvailableQuantity = TRUE, IncludeKitCost = TRUE)
-    new_products <- httr::content(r)$Kits
-    products <- c(products, new_products)
-    if (length(new_products) < pg_size)
-      go <- FALSE
-  }
-  #sv_parse_response(products)
+  products <-
+    sv_api(
+      path = "products/getKits",
+      PageSize = 10000,
+      KitSKUs = skus,
+      GetAvailableQuantity = TRUE,
+      IncludeKitCost = TRUE
+      )
 
   # exit early if there is no data
   if (length(products) == 0) {

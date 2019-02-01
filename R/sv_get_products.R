@@ -3,20 +3,7 @@
 sv_get_products <- function(skus = NULL) {
 
   # Iterate to get a full list of products
-  go <- TRUE
-  pg <- -1
-  pg_size <- 10000
-  products <- list()
-  while (go) {
-    pg <- pg + 1
-    message("Getting page ", pg + 1, " of product data.")
-    r <- sv_api("products/getProducts", PageSize = pg_size, PageNumber = pg, ProductSKUs = skus)
-    new_products <- httr::content(r)$Products
-    products <- c(products, new_products)
-    if (length(new_products) < pg_size)
-      go <- FALSE
-  }
-  #sv_parse_response(products)
+  products <- sv_api(path = "products/getProducts", PageSize = 10000, ProductSKUs = skus)
 
   # exit early if there is no data
   if (length(products) == 0) {
