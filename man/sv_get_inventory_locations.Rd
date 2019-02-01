@@ -2,10 +2,10 @@
 % Please edit documentation in R/sv_get_inventory_locations.R
 \name{sv_get_inventory_locations}
 \alias{sv_get_inventory_locations}
-\title{Get locations}
+\title{Get inventory locations}
 \usage{
 sv_get_inventory_locations(skus = NULL)
 }
 \description{
-Get locations
+Get inventory locations
 }

@@ -2,13 +2,10 @@
 % Please edit documentation in R/sv_api.R
 \name{sv_api}
 \alias{sv_api}
-\title{Make a SkuVault API call}
+\title{Call a SkuVault API endpoint and iterate over all pages}
 \usage{
-sv_api(path, ...)
-}
-\arguments{
-\item{path}{path to api endpoint}
+sv_api(...)
 }
 \description{
-Make a SkuVault API call
+Call a SkuVault API endpoint and iterate over all pages
 }
