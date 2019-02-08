@@ -7,6 +7,11 @@
 sv_get_transactions(start_date = Sys.Date() - 1, end_date = Sys.Date()
   - 1)
 }
+\arguments{
+\item{start_date}{first day of data (Date/scalar)}
+
+\item{end_date}{last day of data (Date/scalar)}
+}
 \description{
 Get transactions
 }
