@@ -5,7 +5,7 @@
 sv_get_sales_details <- function(...) {
 
   # load sales data from the API
-  sales <- sv_get_sales(start_date = Sys.Date() - 1, end_date = Sys.Date() - 1)
+  sales <- sv_get_sales(...)
 
   # convert to 1 row per sku
   out <-
@@ -72,7 +72,7 @@ summary.sales_details <- function(x, ...) {
     dplyr::summarize(
       price = mean(Price),
       cost = mean(Cost),
-      orders = n_distinct(ChannelId),
+      orders = dplyr::n_distinct(ChannelId),
       quantity = sum(Quantity),
       revenue = sum(Quantity * Price),
       profit = sum(Quantity * (Price - Cost))
