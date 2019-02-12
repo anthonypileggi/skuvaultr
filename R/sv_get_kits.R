@@ -26,6 +26,7 @@ sv_get_kits <- function(skus = NULL, include_weights = TRUE) {
       tmp <- tibble::as_tibble(r[vars])
       r$KitLines <- purrr::map_df(r$KitLines, rlang::squash)       # TODO: get multi-item kits
       tmp$KitLines <- list(dplyr::as_tibble(r$KitLines))
+      tmp$Statuses <- paste(r$Statuses, collapse = "; ")
       tmp <- dplyr::rename(tmp, Sku = SKU)
       tmp
     }
