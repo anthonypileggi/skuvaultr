@@ -4,16 +4,9 @@
 #' @importFrom magrittr "%>%"
 #' @export
 sv_get_sales <- function(start_date = Sys.Date() - 14, end_date = Sys.Date() - 1) {
-  # generate date sequences in 7-day groups
-  date_seq <- seq(start_date, end_date, by = "days")
-  ids <- seq(1, length(date_seq), by = 7)
-  dates <- dplyr::tibble(
-    start = c(start_date, date_seq[tail(ids, -1)]),
-    end = c(date_seq[ ids[-1] ] - 1, end_date)
-    ) %>%
-    dplyr::filter(start <= end)
 
-  # call api for each 7-day date range
+  dates <- split_date_range(start_date, end_date, n = 7)
+
   purrr::map2_df(dates$start, dates$end, function(x, y) {
     Sys.sleep(2)
     sv_get_sales_7day(x, y)
