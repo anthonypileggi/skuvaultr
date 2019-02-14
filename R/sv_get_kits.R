@@ -64,7 +64,7 @@ sv_get_kit_weights <- function(kits) {
         TRUE ~ WeightValue
       )
     ) %>%
-    summarize(
+    dplyr::summarize(
       Weight = sum(Quantity * weight)
     )
 
