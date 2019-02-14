@@ -14,7 +14,10 @@ sv_get_sales <- function(start_date = Sys.Date() - 14, end_date = Sys.Date() - 1
     dplyr::filter(start <= end)
 
   # call api for each 7-day date range
-  purrr::map2_df(dates$start, dates$end, ~sv_get_sales_7day(.x, .y))
+  purrr::map2_df(dates$start, dates$end, function(x, y) {
+    Sys.sleep(2)
+    sv_get_sales_7day(x, y)
+  })
 }
 
 #' Get sales (<= 7 days only)
