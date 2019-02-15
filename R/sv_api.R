@@ -64,7 +64,7 @@ sv_api_call <- function(path, ...) {
   if (httr::status_code(response) != 200) {
     stop(
       sprintf(
-        "SkuVault API request failed [%s]\n%s\n<%s>",
+        "SkuVault API request failed [%s]",
         httr::status_code(response)
       ),
       call. = FALSE
