@@ -7,6 +7,9 @@ sv_get_out_of_stock <- function(drop_ship_only = TRUE) {
   # load product data
   x <- sv_get_products()
 
+  # ignore alternate skus/codes
+  x <- dplyr::filter(x, !IsAlternateSKU, !IsAlternateCode)
+
   # ignore discontinued products
   x <- dplyr::filter(x, !stringr::str_detect(Statuses, "NLA"))
 
