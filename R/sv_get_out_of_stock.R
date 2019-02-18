@@ -8,7 +8,7 @@ sv_get_out_of_stock <- function(drop_ship_only = TRUE) {
   x <- sv_get_products()
 
   # ignore discontinued products
-  x <- dplyr::filter(x, !stringr::str_detect(Statuses, "NLA"))
+  x <- dplyr::filter(x, !stringr::str_detect(Statuses, "NLA|Inactive"))
 
   # find out-of-stock (non-NLA)
   x <- dplyr::filter(x, QuantityAvailable == 0)
