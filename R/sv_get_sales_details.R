@@ -35,6 +35,9 @@ sv_get_sales_details <- function(...) {
       by = "Sku"
     )
 
+  # ignore FBA transfers
+  out <- dplyr::filter(out, Marketplace != "TransferSaleHoldsPendingQuantity")
+
   as_sales_details(out)
 }
 
