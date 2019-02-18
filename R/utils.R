@@ -11,3 +11,18 @@ estimate_ship_date <- function(order_date) {
     lubridate::hour(order_date) >= 14 ~ lubridate::date(order_date) + 1
   )
 }
+
+
+#' Divide a date-range into subsequences of a given size
+#' @param start_date First day of date range (Date/scalar)
+#' @param end_date Last day of date range (Date/scalar)
+#' @export
+split_date_range <- function(start_date, end_date, n = 7) {
+  date_seq <- seq(start_date, end_date, by = "days")
+  ids <- seq(1, length(date_seq), by = 7)
+  dates <- dplyr::tibble(
+    start = c(start_date, date_seq[tail(ids, -1)]),
+    end = c(date_seq[ ids[-1] ] - 1, end_date)
+  )
+  dplyr::filter(dates, start <= end)
+}
