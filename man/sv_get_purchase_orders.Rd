@@ -4,7 +4,7 @@
 \alias{sv_get_purchase_orders}
 \title{Get purchase orders}
 \usage{
-sv_get_purchase_orders()
+sv_get_purchase_orders(...)
 }
 \description{
 Get purchase orders
