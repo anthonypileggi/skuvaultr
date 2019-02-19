@@ -38,6 +38,9 @@ sv_get_sales_details <- function(...) {
       Date = lubridate::date(SaleDate)
     )
 
+  # ignore FBA transfers
+  out <- dplyr::filter(out, Marketplace != "TransferSaleHoldsPendingQuantity")
+
   as_sales_details(out)
 }
 
@@ -81,4 +84,22 @@ summary.sales_details <- function(x, ...) {
       profit = sum(Quantity * (Price - Cost))
     ) %>%
     dplyr::arrange(desc(revenue))
+}
+
+
+#' Display a sales_details object
+#' @importFrom magrittr "%>%"
+#' @export
+display.sales_details <- function(x, ...) {
+  summary(x, ...) %>%
+    DT::datatable(
+      rownames = FALSE,
+      options = list(
+        dom = ifelse(nrow(.) > 20, "lfpt", "t"),
+        pageLength = min(20, nrow(x))
+      )
+    ) %>%
+    DT::formatCurrency(c("price", "cost"), digits = 2) %>%
+    DT::formatCurrency(c("revenue", "profit"), digits = 0) %>%
+    DT::formatRound(c("orders", "quantity"), digits = 0)
 }
