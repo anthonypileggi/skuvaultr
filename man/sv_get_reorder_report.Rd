@@ -4,7 +4,7 @@
 \alias{sv_get_reorder_report}
 \title{Create a product reorder report}
 \usage{
-sv_get_reorder_report(n_days = 30)
+sv_get_reorder_report(n_days = 30, include_last_season = TRUE)
 }
 \arguments{
 \item{n_days}{Number of days in-stock to order}
