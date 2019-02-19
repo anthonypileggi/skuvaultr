@@ -33,6 +33,9 @@ sv_get_sales_details <- function(...) {
         dplyr::select(sv_get_kits(unique(out$Sku)), Sku, Cost)
       ),
       by = "Sku"
+    ) %>%
+    dplyr::mutate(
+      Date = lubridate::date(SaleDate)
     )
 
   as_sales_details(out)
