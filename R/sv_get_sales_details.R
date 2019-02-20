@@ -7,6 +7,13 @@ sv_get_sales_details <- function(...) {
   # load sales data from the API
   sales <- sv_get_sales(...)
 
+  # ignore {cancelled orders, FBA transfers}
+  sales <- sales %>%
+    dplyr::filter(
+      Status %in% c("Completed", "ReadyToShip"),
+      Marketplace != "TransferSaleHoldsPendingQuantity"
+    )
+
   # convert to 1 row per sku
   out <-
     purrr::map_df(
@@ -37,9 +44,6 @@ sv_get_sales_details <- function(...) {
     dplyr::mutate(
       Date = lubridate::date(SaleDate)
     )
-
-  # ignore FBA transfers
-  out <- dplyr::filter(out, Marketplace != "TransferSaleHoldsPendingQuantity")
 
   as_sales_details(out)
 }
