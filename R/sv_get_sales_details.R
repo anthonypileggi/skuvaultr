@@ -21,10 +21,9 @@ sv_get_sales_details <- function(...) {
       function(v) {
         out <- sales %>%
           dplyr::select(Id:Marketplace, v) %>%
-          tidyr::unnest() %>%
-          dplyr::mutate(
-            Price = as.numeric(stringr::str_sub(Price, 2, -1))
-          )
+          tidyr::unnest()
+        if ("Price" %in% names(out))
+          out <- dplyr::mutate(out, Price = as.numeric(stringr::str_sub(Price, 2, -1)))
         if ("Items" %in% names(out))
           out <- dplyr::select(out, -Items)
         out
