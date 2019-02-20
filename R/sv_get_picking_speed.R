@@ -3,7 +3,9 @@
 #' @param end_date last day of data (Date/scalar)
 #' @importFrom magrittr "%>%"
 #' @export
-sv_get_picking_speed <- function(start_date = Sys.Date(), end_date = Sys.Date()) {
+sv_get_picking_speed <- function(start_date = Sys.Date(),
+                                 end_date = Sys.Date(),
+                                 show_plot = TRUE) {
 
   x <- sv_get_transactions(start_date = start_date, end_date = end_date) %>%
     dplyr::filter(
@@ -38,5 +40,15 @@ sv_get_picking_speed <- function(start_date = Sys.Date(), end_date = Sys.Date())
       recent = mean(tail(diff, 20), na.rm = TRUE)
     )
 
-  dplyr::bind_rows(out2, out1)
+  out <- dplyr::bind_rows(out2, out1)
+
+  if (show_plot) {
+    out %>%
+      dplyr::group_by(User) %>%
+      dplyr::mutate(count = cumsum(Quantity)) %>%
+      ggplot(aes(x = TransactionDate, y = count, group = User, color = User)) +
+      geom_point()
+  }
+
+  return(out)
 }
