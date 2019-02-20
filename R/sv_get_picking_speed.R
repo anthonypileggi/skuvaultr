@@ -43,11 +43,13 @@ sv_get_picking_speed <- function(start_date = Sys.Date(),
   out <- dplyr::bind_rows(out2, out1)
 
   if (show_plot) {
-    out %>%
+    x %>%
       dplyr::group_by(User) %>%
       dplyr::mutate(count = cumsum(Quantity)) %>%
       ggplot(aes(x = TransactionDate, y = count, group = User, color = User)) +
-      geom_point()
+      geom_point() +
+      labs(x = NULL, y = "Total Picked", color = NULL) +
+      theme_bw()
   }
 
   return(out)
