@@ -1,7 +1,9 @@
 #' Get kits
+#' @param skus skus (character/vector)
+#' @param include_details include kit details? (weight/brand)
 #' @importFrom magrittr "%>%"
 #' @export
-sv_get_kits <- function(skus = NULL, include_weights = TRUE) {
+sv_get_kits <- function(skus = NULL, include_details = TRUE) {
 
   products <-
     sv_api(
@@ -31,20 +33,24 @@ sv_get_kits <- function(skus = NULL, include_weights = TRUE) {
       tmp
     }
   ) %>%
-    dplyr::mutate_at(c("LastModifiedDateTimeUtc", "AvailableQuantityLastModifiedDateTimeUtc"), sv_parse_datetime)
+    dplyr::mutate_at(
+      c("LastModifiedDateTimeUtc", "AvailableQuantityLastModifiedDateTimeUtc"),
+      sv_parse_datetime
+      )
 
-  # include weights (upon request)
-  if (include_weights)
-    kits <- sv_get_kit_weights(kits)
+  # include kit details (upon request)
+  #  - {weight, brand}
+  if (include_details)
+    kits <- sv_get_kit_details(kits)
 
   return(kits)
 }
 
 
-#' Get kit weights
+#' Get kit details
 #' @param kits kit data from a call to \code{\link{sv_get_kits}}
 #' @importFrom magrittr "%>%"
-sv_get_kit_weights <- function(kits) {
+sv_get_kit_details <- function(kits) {
 
   # get SKUs contained within each kit
   kit_items <- kits %>%
@@ -52,7 +58,7 @@ sv_get_kit_weights <- function(kits) {
     tidyr::unnest()
 
   # get weights for base SKUs; sum weights over kit items
-  kit_weights <- kit_items %>%
+  kit_details <- kit_items %>%
     dplyr::left_join(
       sv_get_products(skus = unique(kit_items$SKU)),
       by = c("SKU" = "Sku")
@@ -65,9 +71,10 @@ sv_get_kit_weights <- function(kits) {
       )
     ) %>%
     dplyr::summarize(
-      Weight = sum(Quantity * weight)
+      Weight = sum(Quantity * weight),
+      Brand = paste(unique(Brand), collapse = "; ")
     )
 
   # join with original 'kits' data
-  dplyr::left_join(kits, kit_weights, by = "Sku")
+  dplyr::left_join(kits, kit_details, by = "Sku")
 }
