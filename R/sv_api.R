@@ -1,5 +1,5 @@
 #' Call a SkuVault API endpoint and iterate over all pages
-#' @params ... additional arguments passed to the API
+#' @param ... additional arguments passed to the API
 #' @export
 sv_api <- function(...) {
   params <- list(...)
@@ -64,8 +64,9 @@ sv_api_call <- function(path, ...) {
   if (httr::status_code(response) != 200) {
     stop(
       sprintf(
-        "SkuVault API request failed [%s]",
-        httr::status_code(response)
+        "SkuVault API request failed [%s] \n Errors: [%s]",
+        httr::status_code(response),
+        paste(httr::content(response)$Errors, collapse = ";")
       ),
       call. = FALSE
     )
