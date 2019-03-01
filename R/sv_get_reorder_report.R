@@ -6,7 +6,7 @@
 sv_get_reorder_report <- function(n_days = 30, include_last_season = TRUE) {
 
   # current stock
-  products <- dplyr::filter(sv_get_products(), !IsAlternateSKU, !IsAlternateCode)
+  products <- sv_get_products()
   kits <- sv_get_kits()
 
   # recent sales data
