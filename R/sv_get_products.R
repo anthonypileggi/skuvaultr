@@ -11,10 +11,17 @@ sv_get_products <- function(skus = NULL) {
     return(NULL)
   }
 
-  # parse respose
+  # parse response
+  #  - create columns for alternate code/sku (and remove corresponding rows)
   products %>%
     sv_parse_response() %>%
     dplyr::mutate_at(c("CreatedDateUtc", "ModifiedDateUtc"), sv_parse_datetime) %>%
-    dplyr::mutate_at("WeightValue", as.numeric)
-
+    dplyr::mutate_at("WeightValue", as.numeric) %>%
+    dplyr::group_by(Sku) %>%
+    dplyr::mutate(
+      AlternateCode = paste(Code[IsAlternateCode], collapse = "; "),
+      AlternateSku = paste(Sku[IsAlternateSKU], collapse = "; ")
+      ) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(!IsAlternateCode, !IsAlternateSKU)
 }
