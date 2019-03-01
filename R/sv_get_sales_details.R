@@ -32,14 +32,16 @@ sv_get_sales_details <- function(...) {
     dplyr::arrange(SaleDate)
 
   # attach product costs
+  #   - if a sku is an AP, just use first occurrence
+  products <- dplyr::bind_rows(
+    dplyr::select(sv_get_products(unique(out$Sku)), Sku, Brand, Cost),
+    dplyr::select(sv_get_kits(unique(out$Sku)), Sku, Brand, Cost)
+  ) %>%
+    dplyr::group_by(Sku) %>%
+    dplyr::slice(1)
+
   out <- out %>%
-    dplyr::left_join(
-      dplyr::bind_rows(
-        dplyr::select(sv_get_products(unique(out$Sku)), Sku, Cost),
-        dplyr::select(sv_get_kits(unique(out$Sku)), Sku, Cost)
-      ),
-      by = "Sku"
-    ) %>%
+    dplyr::left_join(products, by = "Sku") %>%
     dplyr::mutate(
       Date = lubridate::date(SaleDate)
     )
