@@ -4,7 +4,12 @@
 \alias{sv_get_kits}
 \title{Get kits}
 \usage{
-sv_get_kits(skus = NULL, include_weights = TRUE)
+sv_get_kits(skus = NULL, include_details = TRUE)
+}
+\arguments{
+\item{skus}{skus (character/vector)}
+
+\item{include_details}{include kit details? (weight/brand)}
 }
 \description{
 Get kits

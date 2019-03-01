@@ -6,6 +6,9 @@
 \usage{
 sv_api(...)
 }
+\arguments{
+\item{...}{additional arguments passed to the API}
+}
 \description{
 Call a SkuVault API endpoint and iterate over all pages
 }
