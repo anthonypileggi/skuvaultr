@@ -72,7 +72,9 @@ sv_get_kit_details <- function(kits) {
     ) %>%
     dplyr::summarize(
       Weight = sum(Quantity * weight),
-      Brand = paste(unique(Brand), collapse = "; ")
+      Brand = paste(unique(Brand), collapse = "; "),
+      Supplier = paste(unique(Supplier), collapse = "; "),
+      Classification = paste(unique(Classification), collapse = "; ")
     )
 
   # join with original 'kits' data
