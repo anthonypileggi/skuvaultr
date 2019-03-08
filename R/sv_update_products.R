@@ -4,12 +4,15 @@
 sv_update_products <- function(df) {
   ids <- 1:nrow(df)
   ids <- split(ids, ceiling(seq_along(ids)/100))
+  ct <- 0
   for (i in ids) {
+    ct <- ct + 1
+    if (ct > 1)
+      Sys.sleep(12)
     message("Updating data for ", length(i), " products (", max(i), "/", max(unlist(ids)), ").")
     sv_api_call(
       path = "products/updateProducts",
       Items = df[i, ]
     )
-    Sys.sleep(12)
   }
 }
