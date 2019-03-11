@@ -7,10 +7,14 @@ sv_get_sales <- function(start_date = Sys.Date() - 14, end_date = Sys.Date() - 1
 
   dates <- split_date_range(start_date, end_date, n = 7)
 
-  purrr::map2_df(dates$start, dates$end, function(x, y) {
-    Sys.sleep(2)
-    sv_get_sales_7day(x, y)
-  })
+  purrr::map_df(
+    1:nrow(dates),
+    function(i) {
+      if (i > 1)
+        Sys.sleep(12)
+      sv_get_sales_7day(dates$start[i], dates$end[i])
+    }
+  )
 }
 
 #' Get sales (<= 7 days only)
