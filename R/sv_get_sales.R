@@ -10,8 +10,7 @@ sv_get_sales <- function(start_date = Sys.Date() - 14, end_date = Sys.Date() - 1
   purrr::map_df(
     1:nrow(dates),
     function(i) {
-      if (i > 1)
-        Sys.sleep(12)
+      Sys.sleep(13)
       sv_get_sales_7day(dates$start[i], dates$end[i])
     }
   )
