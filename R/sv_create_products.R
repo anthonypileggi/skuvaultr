@@ -28,7 +28,7 @@ sv_create_products <- function(df) {
     )
     # -- check for errors
     content <- httr::content(response)
-    if (content$Status != "Success")
+    if (!(content$Status %in% c("OK", "Success")))
       stop(paste("Errors: ", paste(content$Errors, collapse = ";")), call. = FALSE)
   }
 
