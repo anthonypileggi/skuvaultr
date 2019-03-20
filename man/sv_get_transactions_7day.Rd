@@ -5,12 +5,14 @@
 \title{Get transactions (<= 7 days only)}
 \usage{
 sv_get_transactions_7day(start_date = Sys.Date() - 1,
-  end_date = Sys.Date() - 1)
+  end_date = Sys.Date() - 1, sale_id = NULL)
 }
 \arguments{
 \item{start_date}{first day of data (Date/scalar)}
 
 \item{end_date}{last day of data (Date/scalar)}
+
+\item{sale_id}{sale id (character/scalar) -- NOT WORKING}
 }
 \description{
 Get transactions (<= 7 days only)
