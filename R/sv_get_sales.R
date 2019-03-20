@@ -18,7 +18,7 @@ sv_get_sales <- function(start_date = Sys.Date() - 14,
     1:nrow(dates),
     function(i) {
       Sys.sleep(13)
-      sv_get_sales_7day(dates$start[i], dates$end[i], ...)
+      sv_get_sales_7day(dates$start[i], dates$end[i])
     }
   )
 }
