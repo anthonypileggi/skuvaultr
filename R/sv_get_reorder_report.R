@@ -20,6 +20,7 @@ sv_get_reorder_report <- function(n_days = 30, include_last_season = TRUE) {
     start_date <- season_start_date
   }
   sales <- sv_get_sales_details(start_date = start_date, end_date = end_date)
+  #sales <- bq_get_sales_history(start_date = start_date, end_date = end_date)
 
   # get quantity sold for each sku over various date-ranges
   # - base skus
@@ -63,7 +64,7 @@ sv_get_reorder_report <- function(n_days = 30, include_last_season = TRUE) {
   # -- based on sales in past 28 days
   products %>%
     dplyr::filter(
-      !stringr::str_detect(Statuses, "NLA|Inactive")
+      !stringr::str_detect(Statuses, "NLA|Inactive|Superseded")
     ) %>%
     dplyr::mutate(
       Created = lubridate::date(CreatedDateUtc)
