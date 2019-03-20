@@ -17,7 +17,7 @@ sv_get_products <- function(skus = NULL) {
     sv_parse_response() %>%
     dplyr::mutate_at(c("CreatedDateUtc", "ModifiedDateUtc"), sv_parse_datetime) %>%
     dplyr::mutate_at("WeightValue", as.numeric) %>%
-    dplyr::group_by(Sku) %>%
+    dplyr::group_by(Id) %>%
     dplyr::mutate(
       AlternateCode = paste(Code[IsAlternateCode], collapse = "; "),
       AlternateSku = paste(Sku[IsAlternateSKU], collapse = "; ")
