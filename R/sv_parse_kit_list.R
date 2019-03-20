@@ -2,12 +2,14 @@
 sv_parse_item <- function(x) {
   purrr::map_df(x,
     function(aa) {
-      dplyr::tibble(
+      out <- dplyr::tibble(
         Sku = aa$Sku,
         Quantity = aa$Quantity,
-        Price = paste(aa$UnitPrice[c("s", "a")], collapse = ""),
-        PartNumber = aa$PartNumber
+        Price = paste(aa$UnitPrice[c("s", "a")], collapse = "")
       )
+      if (!is.null(aa$PartNumber))
+        out <- dplyr::mutate(out, PartNumber = aa$PartNumber)
+      out
     }
   )
 }
