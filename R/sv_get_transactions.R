@@ -7,8 +7,8 @@ sv_get_transactions <- function(start_date = Sys.Date() - 14,
                                 sale_id = NULL) {
 
   # return transactions for a specific order
-  if (!is.null(order_id))
-    return(sv_get_transactions_7day(dates$start, dates$end, order_id = order_id))
+  if (!is.null(sale_id))
+    return(sv_get_transactions_7day(dates$start, dates$end, sale_id = sale_id))
 
   dates <- split_date_range(start_date, end_date, n = 7)
 

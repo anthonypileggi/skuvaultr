@@ -15,11 +15,11 @@ sv_parse_response <- function(response) {
           tmp[[v]] <- list(dplyr::as_tibble(r[[v]]))
         }
       }
-      for (v in c("FulfilledKits", "MerchantKits")) {
+      for (v in c("FulfilledKits", "MerchantKits", "SaleKits")) {
         if (v %in% names(r))
           tmp[[v]] <- list(sv_parse_kit(r[[v]]))
       }
-      for (v in c("FulfilledItems", "MerchantItems")) {
+      for (v in c("FulfilledItems", "MerchantItems", "SaleItems")) {
         if (v %in% names(r))
           tmp[[v]] <- list(sv_parse_item(r[[v]]))
       }
