@@ -13,7 +13,7 @@ sv_get_transactions <- function(start_date = Sys.Date() - 14,
   dates <- split_date_range(start_date, end_date, n = 7)
 
   purrr::map2_df(dates$start, dates$end, function(x, y) {
-    Sys.sleep(2)
+    Sys.sleep(12)
     sv_get_transactions_7day(x, y)
   })
 }
