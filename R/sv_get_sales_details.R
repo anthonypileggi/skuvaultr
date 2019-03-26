@@ -39,12 +39,28 @@ sv_get_sales_details <- function(...) {
   ) %>%
     dplyr::group_by(Sku) %>%
     dplyr::slice(1)
-
   out <- out %>%
     dplyr::left_join(products, by = "Sku") %>%
     dplyr::mutate(
       Date = lubridate::date(SaleDate)
     )
+
+  # attach Channel/FBA status
+  channels <- sales %>%
+    dplyr::mutate(
+      is_fulfilled = purrr::map2_lgl(FulfilledItems, FulfilledKits, ~nrow(.x) > 0 | nrow(.y) > 0),
+      Channel = dplyr::case_when(
+        Marketplace == "Amazon Seller Central - US" & is_fulfilled  ~ "Amazon FBA",
+        Marketplace == "Amazon Seller Central - US" & !is_fulfilled ~ "Amazon",
+        Marketplace == "eBay Fixed Price"                           ~ "eBay",
+        Marketplace == "Unknown"                                    ~ "Pricefalls",
+        Marketplace == "Manual"                                     ~ "Service/Returns",
+        Marketplace == "Walmart Marketplace"                        ~ "Walmart",
+        TRUE                                                        ~ Marketplace
+      )
+    ) %>%
+    dplyr::select(Id, Channel)
+  out <- dplyr::left_join(out, channels, by = "Id")
 
   as_sales_details(out)
 }
