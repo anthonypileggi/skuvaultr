@@ -28,7 +28,7 @@ sv_parse_response <- function(response) {
       if ("LineItems" %in% names(r))
         tmp[["LineItems"]] <- list(purrr::map_df(r[["LineItems"]], dplyr::as_tibble))
       if ("Statuses" %in% names(r))
-        tmp[["Statuses"]] <- paste(r[["Statuses"]], collapse = "; ")
+        tmp[["Statuses"]] <- paste(sort(r[["Statuses"]]), collapse = "; ")
       tmp
     }
   )
