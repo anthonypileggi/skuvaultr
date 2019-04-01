@@ -43,8 +43,10 @@ sv_get_sales_7day <- function(start_date = Sys.Date() - 1,
     x <- sv_api_call(path = "sales/getSales", OrderIds = order_id)
     x <- httr::content(x)$Sales
   } else {
-    from_date <- paste0(start_date, "T05:00:00.0000000Z")     # time in UTC
-    to_date <- paste0(end_date + 1, "T04:59:59.0000000Z")     # time in UTC
+    start_datetime <- as.POSIXct(paste(start_date, "00:00:00"))
+    end_datetime <- as.POSIXct(paste(end_date, "23:59:59"))
+    from_date <- format(lubridate::with_tz(start_datetime, tzone = "UTC"), "%Y-%m-%dT%T.0000000Z")
+    to_date <- format(lubridate::with_tz(end_datetime, tzone = "UTC"), "%Y-%m-%dT%T.0000000Z")
     x <- sv_api(path = "sales/getSalesByDate", PageSize = 10000, FromDate = from_date, ToDate = to_date)
   }
 
