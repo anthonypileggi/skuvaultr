@@ -41,7 +41,7 @@ sv_get_transactions_7day <- function(start_date = Sys.Date() - 1,
     )
 
   if (length(x) == 0) {
-    dplyr::tibble(
+    out <- dplyr::tibble(
       User = character(), Sku = character(), Code = character(),
       ScannedCode = character(), LotNumber = character(), Title = character(),
       Quantity = integer(), QuantityBefore = integer(), QuantityAfter = integer(),
@@ -49,9 +49,11 @@ sv_get_transactions_7day <- function(start_date = Sys.Date() - 1,
       TransactionReason = character(), TransactionNote = character(),
       TransactionDate = Sys.time()[-1]
     )
+  } else {
+    out <- x %>%
+      sv_parse_response() %>%
+      dplyr::mutate_at(c("TransactionDate"), sv_parse_datetime)
   }
 
-  x %>%
-    sv_parse_response() %>%
-    dplyr::mutate_at(c("TransactionDate"), sv_parse_datetime)
+  return(out)
 }
