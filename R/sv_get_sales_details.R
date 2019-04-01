@@ -33,12 +33,8 @@ sv_get_sales_details <- function(...) {
 
   # attach product costs
   #   - if a sku is an AP, just use first occurrence
-  products <- dplyr::bind_rows(
-    dplyr::select(sv_get_products(unique(out$Sku)), Sku, Brand, Cost),
-    dplyr::select(sv_get_kits(unique(out$Sku)), Sku, Brand, Cost)
-  ) %>%
-    dplyr::group_by(Sku) %>%
-    dplyr::slice(1)
+  products <- sv_get_product_inventory() %>%
+    dplyr::select(Sku, Brand, Supplier, Classification, Type, Cost)
   out <- out %>%
     dplyr::left_join(products, by = "Sku") %>%
     dplyr::mutate(
@@ -72,7 +68,8 @@ sv_get_sales_details <- function(...) {
 #' @param x an object containing summary sales data
 #' @export
 as_sales_details <- function(x) {
-  class(x) <- append("sales_details", class(x))
+  if (!is_sales_details(x))
+    class(x) <- append("sales_details", class(x))
   x
 }
 
@@ -94,7 +91,7 @@ is_sales_details <- function(x) {
 #' @export
 summary.sales_details <- function(x, ...) {
   dims <- rlang::quos(...)
-  x %>%
+  out <- x %>%
     dplyr::group_by(!!!dims) %>%
     dplyr::summarize(
       price = mean(Price),
@@ -105,6 +102,7 @@ summary.sales_details <- function(x, ...) {
       profit = sum(Quantity * (Price - Cost))
     ) %>%
     dplyr::arrange(desc(revenue))
+  as_sales_details(out)
 }
 
 
