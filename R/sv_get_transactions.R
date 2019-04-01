@@ -26,8 +26,12 @@ sv_get_transactions <- function(start_date = Sys.Date() - 14,
 sv_get_transactions_7day <- function(start_date = Sys.Date() - 1,
                                      end_date = Sys.Date() - 1,
                                      sale_id = NULL) {
-  from_date <- paste0(start_date, "T05:00:00.0000000Z")     # time in UTC
-  to_date <- paste0(end_date + 1, "T04:59:59.0000000Z")     # time in UTC
+
+  start_datetime <- as.POSIXct(paste(start_date, "00:00:00"))
+  end_datetime <- as.POSIXct(paste(end_date, "23:59:59"))
+  from_date <- format(lubridate::with_tz(start_datetime, tzone = "UTC"), "%Y-%m-%dT%T.0000000Z")
+  to_date <- format(lubridate::with_tz(end_datetime, tzone = "UTC"), "%Y-%m-%dT%T.0000000Z")
+
   x <- sv_api(
     path = "inventory/getTransactions",
     PageSize = 10000,
@@ -35,6 +39,18 @@ sv_get_transactions_7day <- function(start_date = Sys.Date() - 1,
     ToDate = to_date,
     SaleId = sale_id
     )
+
+  if (length(x) == 0) {
+    dplyr::tibble(
+      User = character(), Sku = character(), Code = character(),
+      ScannedCode = character(), LotNumber = character(), Title = character(),
+      Quantity = integer(), QuantityBefore = integer(), QuantityAfter = integer(),
+      Location = character(), TransactionType = character(),
+      TransactionReason = character(), TransactionNote = character(),
+      TransactionDate = Sys.time()[-1]
+    )
+  }
+
   x %>%
     sv_parse_response() %>%
     dplyr::mutate_at(c("TransactionDate"), sv_parse_datetime)
