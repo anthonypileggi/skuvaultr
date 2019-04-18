@@ -71,6 +71,7 @@ sv_get_kit_details <- function(kits) {
       )
     ) %>%
     dplyr::summarize(
+      PartNumber = paste(unique(PartNumber), collapse = "+"),
       Weight = sum(Quantity * weight),
       Brand = paste(unique(Brand), collapse = "; "),
       Supplier = paste(unique(Supplier), collapse = "; "),
