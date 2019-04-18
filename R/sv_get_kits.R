@@ -75,7 +75,8 @@ sv_get_kit_details <- function(kits) {
       Weight = sum(Quantity * weight),
       Brand = paste(unique(Brand), collapse = "; "),
       Supplier = paste(unique(Supplier), collapse = "; "),
-      Classification = paste(unique(Classification), collapse = "; ")
+      Classification = paste(unique(Classification), collapse = "; "),
+      PkgQty = sum(Quantity)
     )
 
   # join with original 'kits' data
