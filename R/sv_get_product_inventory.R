@@ -30,10 +30,10 @@ sv_get_product_inventory <- function() {
   dplyr::bind_rows(
     products %>%
       dplyr::left_join(kit_details, by = "Sku") %>%
-      dplyr::select(Sku, Description, Classification, Brand, Supplier, Statuses, Cost, Weight, QuantityAvailable, n_kits, kits) %>%
+      dplyr::select(Sku, PartNumber, Description, Classification, Brand, Supplier, Statuses, Cost, Weight, QuantityAvailable, n_kits, kits) %>%
       dplyr::mutate(Type = "product"),
     kits %>%
-      dplyr::select(Sku, Description, Classification, Brand, Supplier, Statuses, Cost, Weight, QuantityAvailable = AvailableQuantity) %>%
+      dplyr::select(Sku, PartNumber, Description, Classification, Brand, Supplier, Statuses, Cost, Weight, QuantityAvailable = AvailableQuantity) %>%
       dplyr::mutate(Type = "kit")
   ) %>%
     tidyr::replace_na(list(n_kits = 0, kits = "")) %>%
