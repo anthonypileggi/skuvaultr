@@ -20,16 +20,27 @@ sv_get_sales_details <- function(...) {
       c("FulfilledKits", "MerchantKits", "FulfilledItems", "MerchantItems"),
       function(v) {
         out <- sales %>%
-          dplyr::select(Id:Marketplace, v) %>%
+          dplyr::select(Id:Marketplace, v, ShippingCost) %>%
           tidyr::unnest()
         if ("Price" %in% names(out))
           out <- dplyr::mutate(out, Price = as.numeric(stringr::str_sub(Price, 2, -1)))
+        if ("ShippingCost" %in% names(out))
+          out <- dplyr::mutate(out, ShippingCost = as.numeric(stringr::str_sub(ShippingCost, 2, -1)))
         if ("Items" %in% names(out))
           out <- dplyr::select(out, -Items)
         out
       }
     ) %>%
     dplyr::arrange(SaleDate)
+
+  # split shippingCost across order items
+  out <- out %>%
+    dplyr::group_by(Id) %>%
+    dplyr::mutate(
+      ShippingPaid = round(ShippingCost / dplyr::n(), 2)
+    ) %>%
+    dplyr::select(-ShippingCost) %>%
+    dplyr::ungroup()
 
   # attach product costs
   #   - if a sku is an AP, just use first occurrence

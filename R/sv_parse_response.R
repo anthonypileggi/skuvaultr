@@ -29,6 +29,8 @@ sv_parse_response <- function(response) {
         tmp[["LineItems"]] <- list(purrr::map_df(r[["LineItems"]], dplyr::as_tibble))
       if ("Statuses" %in% names(r))
         tmp[["Statuses"]] <- paste(sort(unlist(r[["Statuses"]])), collapse = "; ")
+      if ("ShippingCost" %in% names(r))
+        tmp[["ShippingCost"]] <- paste(r[["ShippingCost"]][c("s", "a")], collapse = "")
       tmp
     }
   )

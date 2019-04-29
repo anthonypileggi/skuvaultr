@@ -4,8 +4,7 @@
 \alias{sv_get_empty_bins}
 \title{Find all inventory bins recently emptied}
 \usage{
-sv_get_empty_bins(start_date = Sys.Date() - 7, end_date = Sys.Date() -
-  1)
+sv_get_empty_bins(start_date = Sys.Date() - 7, end_date = Sys.Date())
 }
 \arguments{
 \item{start_date}{first day of data (Date/scalar)}
