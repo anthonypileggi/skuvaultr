@@ -60,7 +60,7 @@ sv_get_kit_details <- function(kits) {
   # get weights for base SKUs; sum weights over kit items
   kit_details <- kit_items %>%
     dplyr::left_join(
-      sv_get_products(skus = unique(kit_items$SKU)),
+      sv_get_products(skus = unique(.$SKU)),
       by = c("SKU" = "Sku")
     ) %>%
     dplyr::group_by(Sku) %>%
@@ -76,7 +76,8 @@ sv_get_kit_details <- function(kits) {
       Brand = paste(unique(Brand), collapse = "; "),
       Supplier = paste(unique(Supplier), collapse = "; "),
       Classification = paste(unique(Classification), collapse = "; "),
-      PkgQty = sum(Quantity)
+      PkgQty = sum(Quantity),
+      IncomingQuantity = min(floor(QuantityIncoming / Quantity))
     )
 
   # join with original 'kits' data
