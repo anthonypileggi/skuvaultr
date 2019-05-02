@@ -18,10 +18,13 @@ sv_get_product_inventory <- function() {
   kit_details <- kits %>%
     dplyr::select(Sku, KitLines) %>%
     tidyr::unnest() %>%
+    dplyr::group_by(Sku) %>%
+    dplyr::mutate(n_skus = dplyr::n_distinct(SKU)) %>%
     dplyr::group_by(SKU) %>%
     dplyr::summarize(
       n_kits = dplyr::n(),
-      kits = paste(Sku, collapse = ", ")
+      kits = paste(Sku, collapse = ", "),
+      is_simple = all(n_skus == 1) & all(Quantity == 1)
     ) %>%
     dplyr::rename(Sku = SKU)
 
@@ -32,7 +35,7 @@ sv_get_product_inventory <- function() {
       dplyr::left_join(kit_details, by = "Sku") %>%
       dplyr::select(
         Sku, PartNumber, Description, Classification, Brand, Supplier, Statuses,
-        Cost, Weight, QuantityAvailable, QuantityIncoming, n_kits, kits
+        Cost, Weight, QuantityAvailable, QuantityIncoming, n_kits, kits, is_simple
         ) %>%
       dplyr::mutate(Type = "product"),
     kits %>%
@@ -42,7 +45,7 @@ sv_get_product_inventory <- function() {
         ) %>%
       dplyr::mutate(Type = "kit")
   ) %>%
-    tidyr::replace_na(list(n_kits = 0, kits = "", PkgQty = 1)) %>%
+    tidyr::replace_na(list(n_kits = 0, kits = "", PkgQty = 1, is_simple = FALSE)) %>%
     dplyr::group_by(Sku) %>%
     dplyr::arrange(Type) %>%
     dplyr::slice(1) %>%
