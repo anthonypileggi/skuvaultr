@@ -58,10 +58,11 @@ sv_api_call <- function(path, ...) {
 
   # call api
   url <- httr::modify_url("https://app.skuvault.com", path = paste0("api/", path))
-  response <- dplyr::case_when(
-    path %in% c("products/getKits") ~ httr::POST(url, body = my_json),
-    TRUE                            ~ httr::POST(url, body = my_json, encode = "json")
-  )
+  if (path %in% c("products/getKits")) {
+    response <- httr::POST(url, body = my_json)
+  } else {
+    response <- httr::POST(url, body = my_json, encode = "json")
+  }
 
   # check status code
   if (httr::status_code(response) != 200) {
