@@ -58,7 +58,7 @@ sv_api_call <- function(path, ...) {
 
   # call api
   url <- httr::modify_url("https://app.skuvault.com", path = paste0("api/", path))
-  response <- httr::POST(url, body = my_json, encode = "json")
+  response <- httr::POST(url, body = my_json)
 
   # check status code
   if (httr::status_code(response) != 200) {
