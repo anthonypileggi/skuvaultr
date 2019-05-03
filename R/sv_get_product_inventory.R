@@ -35,7 +35,7 @@ sv_get_product_inventory <- function() {
       dplyr::left_join(kit_details, by = "Sku") %>%
       dplyr::select(
         Sku, PartNumber, Description, Classification, Brand, Supplier, Statuses,
-        Cost, Weight, QuantityAvailable, QuantityIncoming, n_kits, kits, is_simple
+        Cost, Price = SalePrice, Weight, QuantityAvailable, QuantityIncoming, n_kits, kits, is_simple
         ) %>%
       dplyr::mutate(Type = "product"),
     kits %>%
@@ -45,7 +45,7 @@ sv_get_product_inventory <- function() {
         ) %>%
       dplyr::mutate(Type = "kit")
   ) %>%
-    tidyr::replace_na(list(n_kits = 0, kits = "", PkgQty = 1, is_simple = FALSE)) %>%
+    tidyr::replace_na(list(n_kits = 0, kits = "", PkgQty = 1, is_simple = FALSE, Price = 0)) %>%
     dplyr::group_by(Sku) %>%
     dplyr::arrange(Type) %>%
     dplyr::slice(1) %>%
