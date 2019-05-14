@@ -11,7 +11,7 @@ sv_parse_response <- function(response) {
       tmp <- tibble::as_tibble(r[vars])
       for (v in c("SupplierInfo", "KitLines")) {                                  # format list objects as tibbles
         if (v %in% names(r)) {
-          r[[v]] <- purrr::map_df(r[[v]], rlang::squash)
+          r[[v]] <- suppressWarnings(purrr::map_df(r[[v]], rlang::squash))
           tmp[[v]] <- list(dplyr::as_tibble(r[[v]]))
         }
       }

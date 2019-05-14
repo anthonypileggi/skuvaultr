@@ -26,7 +26,7 @@ sv_get_kits <- function(skus = NULL, include_details = TRUE) {
     function(r) {
       vars <- names(r)[purrr::map_lgl(r, ~length(.x) == 1)]        # TODO: this ignores entries with > 1 length (e.g., multiple suppliers)
       tmp <- tibble::as_tibble(r[vars])
-      r$KitLines <- purrr::map_df(r$KitLines, rlang::squash)       # TODO: get multi-item kits
+      r$KitLines <- suppressWarnings(purrr::map_df(r$KitLines, rlang::squash))       # TODO: get multi-item kits
       tmp$KitLines <- list(dplyr::as_tibble(r$KitLines))
       tmp$Statuses <- paste(r$Statuses, collapse = "; ")
       tmp <- dplyr::rename(tmp, Sku = SKU)
