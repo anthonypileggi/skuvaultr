@@ -32,6 +32,7 @@ sv_get_sales_details <- function(...) {
         out
       }
     ) %>%
+    dplyr::mutate_at("Sku", toupper) %>%
     dplyr::arrange(SaleDate)
 
   # split shippingCost across order items

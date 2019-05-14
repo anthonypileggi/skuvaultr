@@ -9,7 +9,7 @@ sv_get_inventory_locations <- function(skus = NULL) {
   purrr::map_df(
     names(x),
     function(a) {
-      purrr::map_df(x[[a]], function(b) dplyr::bind_cols(dplyr::tibble(Sku = a), dplyr::as_tibble(b)))
+      purrr::map_df(x[[a]], function(b) dplyr::bind_cols(dplyr::tibble(Sku = toupper(a)), dplyr::as_tibble(b)))
     }
   )
 }
