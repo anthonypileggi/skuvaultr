@@ -15,9 +15,10 @@ sv_get_sales_details <- function(...) {
     )
 
   # convert to 1 row per sku
+  v <- intersect(c("FulfilledKits", "MerchantKits", "FulfilledItems", "MerchantItems"), names(sales))
   out <-
     purrr::map_df(
-      c("FulfilledKits", "MerchantKits", "FulfilledItems", "MerchantItems"),
+      v,
       function(v) {
         out <- sales %>%
           dplyr::select(Id:Marketplace, v, ShippingCost) %>%
