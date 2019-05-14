@@ -10,7 +10,7 @@ sv_pick_order <- function(saleid) {
   picklist <- order$picklist
 
   # checks
-  if (order$status != "Pending")
+  if (order$status != c("Pending", "ReadyToShip"))
     stop("Order does not need to be picked!")
   if (any(picklist$Quantity > picklist$Available))
     stop("Not enough inventory to pick this order!")
