@@ -34,5 +34,6 @@ sv_pick_order <- function(saleid) {
   )
 
   # complete order after picking
+  Sys.sleep(5)
   sv_update_sale_status(saleid, "Complete")
 }
