@@ -12,7 +12,7 @@ sv_order_as_picklist <- function(saleid) {
 
   # get order contents
   picklist <- dplyr::bind_rows(
-    purrr::map_df(order$SaleKits, ~.x$Items),
+    purrr::map_df(order$SaleKits, ~.x$Items[[1]]),
     purrr::map_df(order$SaleItems, ~dplyr::select(.x, Sku, Quantity))
   )
 
