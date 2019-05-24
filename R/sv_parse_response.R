@@ -17,16 +17,20 @@ sv_parse_response <- function(response) {
       }
       for (v in c("FulfilledKits", "MerchantKits", "SaleKits")) {
         if (v %in% names(r))
-          tmp[[v]] <- list(sv_parse_kit(r[[v]]))
+          tmp[[v]] <- list(skuvaultr:::sv_parse_kit(r[[v]]))
       }
       for (v in c("FulfilledItems", "MerchantItems", "SaleItems")) {
         if (v %in% names(r))
-          tmp[[v]] <- list(sv_parse_item(r[[v]]))
+          tmp[[v]] <- list(skuvaultr:::sv_parse_item(r[[v]]))
       }
-      if ("ProcessedItems" %in% names(r))
-        tmp[["ProcessedItems"]] <- list(purrr::map_df(r[["ProcessedItems"]], dplyr::as_tibble))
-      if ("LineItems" %in% names(r))
-        tmp[["LineItems"]] <- list(purrr::map_df(r[["LineItems"]], dplyr::as_tibble))
+      for (v in c("ProcessedItems", "LineItems")) {
+        if (v %in% names(r))
+          tmp[[v]] <- list(purrr::map_df(r[[v]], dplyr::as_tibble))
+      }
+      for (v in c("ShippingInfo", "ContactInfo")) {
+        if (v %in% names(r))
+          tmp[[v]] <- list(dplyr::as_tibble(r[[v]]))
+      }
       if ("Statuses" %in% names(r))
         tmp[["Statuses"]] <- paste(sort(unlist(r[["Statuses"]])), collapse = "; ")
       if ("ShippingCost" %in% names(r))
