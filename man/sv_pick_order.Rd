@@ -4,10 +4,12 @@
 \alias{sv_pick_order}
 \title{Auto-Pick an order}
 \usage{
-sv_pick_order(saleid)
+sv_pick_order(saleid = NULL, picklist = NULL)
 }
 \arguments{
-\item{saleid}{SaleId of order to pick}
+\item{saleid}{SaleId of order to pick (character/scalar)}
+
+\item{picklist}{prepared picklist (data.frame)}
 }
 \description{
 Auto-Pick an order

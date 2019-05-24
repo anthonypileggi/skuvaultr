@@ -8,9 +8,9 @@ sv_update_sale_status(saleid, status = c("Completed", "Cancelled",
   "Pending", "ReadyToShip", "Invalid", "ShippedUnpaid"))
 }
 \arguments{
-\item{saleid}{saleID of the order}
+\item{saleid}{saleID of the order (character/vector)}
 
-\item{status}{order status to set}
+\item{status}{order status to set (character/scalar)}
 }
 \description{
 Update the status of a sale
