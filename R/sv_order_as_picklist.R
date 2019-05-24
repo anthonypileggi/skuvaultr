@@ -23,5 +23,35 @@ sv_order_as_picklist <- function(saleid) {
     dplyr::rename(Available = Quantity)
   picklist <- dplyr::left_join(picklist, locs, by = "Sku")
 
+  # check if order can be fulfilled
+  tmp <- picklist %>%
+    group_by(Sku) %>%
+    summarize(
+      Quantity = head(Quantity, 1),
+      Available = sum(Available)
+      )
+  if (any(tmp$Quantity > tmp$Available))
+    stop("Not enough inventory to pick this order!")
+
+  # account for items w/ multiple locations!
+  # --> empty drop-ship bins as last resort
+  # --> prioritized by bin location (i.e., alphabet)
+  # --> ignore extra locations we will not be picking from
+  picklist <- picklist %>%
+    dplyr::group_by(Sku) %>%
+    dplyr::mutate(
+      LocationCode = ifelse(LocationCode == "DROP-SHIPS", "ZZZ-DROP-SHIPS", LocationCode)
+    ) %>%
+    dplyr::arrange(LocationCode) %>%
+    dplyr::mutate(
+      Pick = purrr::map2_dbl(Quantity, Available, ~min(c(.x, .y))),
+      Total = cumsum(Pick),
+      Extra = ifelse(Total > Quantity, Total - Quantity, 0),
+      Quantity = Pick - Extra,
+      LocationCode = ifelse(LocationCode == "ZZZ-DROP-SHIPS", "DROP-SHIPS", LocationCode)
+    ) %>%
+    dplyr::select(-Pick, -Total, -Extra) %>%
+    dplyr::filter(Quantity > 0)
+
   return(list(status = order$Status, picklist = picklist))
 }
