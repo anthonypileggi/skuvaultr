@@ -58,7 +58,8 @@ sv_get_kit_details <- function(kits) {
   # get SKUs contained within each kit
   kit_items <- kits %>%
     dplyr::select(Sku, KitLines) %>%
-    tidyr::unnest()
+    tidyr::unnest() %>%
+    dplyr::mutate_at(c("Code", "SKU"), toupper)
 
   # get weights for base SKUs; sum weights over kit items
   kit_details <- kit_items %>%
