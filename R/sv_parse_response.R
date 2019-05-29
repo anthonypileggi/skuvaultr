@@ -23,7 +23,7 @@ sv_parse_response <- function(response) {
         if (v %in% names(r))
           tmp[[v]] <- list(skuvaultr:::sv_parse_item(r[[v]]))
       }
-      for (v in c("ProcessedItems", "LineItems")) {
+      for (v in c("ProcessedItems", "LineItems", "Attributes")) {
         if (v %in% names(r))
           tmp[[v]] <- list(purrr::map_df(r[[v]], dplyr::as_tibble))
       }
@@ -35,14 +35,6 @@ sv_parse_response <- function(response) {
         tmp[["Statuses"]] <- paste(sort(unlist(r[["Statuses"]])), collapse = "; ")
       if ("ShippingCost" %in% names(r))
         tmp[["ShippingCost"]] <- paste(r[["ShippingCost"]][c("s", "a")], collapse = "")
-
-      # !!!! THIS SLOWS EVERYTHING DOWN WAY TOO MUCH !!!
-      # if ("Attributes" %in% names(r)) {
-      #   tmp[["Attributes"]] <- r[["Attributes"]] %>%
-      #     purrr::map_df(dplyr::as_tibble) %>%
-      #     tidyr::spread(Name, Value) %>%
-      #     list()
-      # }
 
       tmp
     }
