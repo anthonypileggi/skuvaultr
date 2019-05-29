@@ -35,6 +35,12 @@ sv_parse_response <- function(response) {
         tmp[["Statuses"]] <- paste(sort(unlist(r[["Statuses"]])), collapse = "; ")
       if ("ShippingCost" %in% names(r))
         tmp[["ShippingCost"]] <- paste(r[["ShippingCost"]][c("s", "a")], collapse = "")
+      if ("Attributes" %in% names(r)) {
+        tmp[["Attributes"]] <- r[["Attributes"]] %>%
+          purrr::map_dfc(~tidyr::spread(dplyr::as_tibble(.x), Name, Value)) %>%
+          list()
+      }
+
       tmp
     }
   )
