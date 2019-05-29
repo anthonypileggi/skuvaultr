@@ -2,6 +2,10 @@
 #' @param df data.frame containing columns SKU + columns to update
 #' @export
 sv_update_products <- function(df) {
+
+  if ("Attributes" %in% names(df))
+    df <- dplyr::mutate(df, Attributes = purrr::map(Attributes, jsonlite::unbox))
+
   ids <- 1:nrow(df)
   ids <- split(ids, ceiling(seq_along(ids)/100))
   ct <- 0

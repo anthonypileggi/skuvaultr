@@ -12,6 +12,8 @@ sv_create_products <- function(df) {
     if (!all(req_cols2 %in% names(df$SupplierInfo[[1]])))
       stop(paste0("SupplierInfo must include columns: {", paste(req_cols2, collapse = ", "), "}"))
   }
+  if ("Attributes" %in% names(df))
+    df <- dplyr::mutate(df, Attributes = purrr::map(Attributes, jsonlite::unbox))
 
   # submit to API
   ids <- 1:nrow(df)
