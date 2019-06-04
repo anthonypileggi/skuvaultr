@@ -18,6 +18,7 @@ sv_create_kits <- function(x) {
     response <- sv_api_call(
       path = "products/createKit",
       Sku = x$Sku[i],
+      Code = x$Sku[i],
       Title = x$Title[i],
       KitLines = x$KitLines[[i]]
     )
