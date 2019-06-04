@@ -14,6 +14,7 @@ sv_get_orders <- function(start_date = Sys.Date() - 1, end_date = Sys.Date()) {
   out <- purrr::map_df(v, ~tidyr::unnest(dplyr::select(sales, Id, .x)))
 
   # TODO: attach actual 'Order' contents (i.e., w/ kits)
+  # TODO: return all fields, not just a select few...
 
   # unnest kits
   if ("Items" %in% names(out)) {
