@@ -34,6 +34,7 @@ sv_get_orders <- function(start_date = Sys.Date() - 1, end_date = Sys.Date()) {
 
   # attach item classifications
   out <- out %>%
+    dplyr::mutate_at(c("Sku", "PartNumber"), toupper) %>%
     dplyr::left_join(
       skuvaultr::sv_get_products(skus = unique(.$Sku)) %>%
         dplyr::select(Sku, Classification, Supplier, QuantityAvailable),
@@ -43,13 +44,9 @@ sv_get_orders <- function(start_date = Sys.Date() - 1, end_date = Sys.Date()) {
   # classify orders
   order_class <- out %>%
     dplyr::group_by(Id) %>%
-    dplyr::summarize(
-      Type = dplyr::case_when(
-        all(Classification %in% "Drop Ship")  ~  "Drop Ship",
-        any(Classification %in% "Drop Ship")  ~  "Hybrid",
-        all(Classification %in% "General")    ~  "In-house"
-      ),
-      Supplier = paste(unique(Supplier), collapse = "; ")
+    dplyr::summarize_at(
+      c("Classification", "Supplier"),
+      function(y) paste(unique(y), collapse = "; ")
     )
 
   # get contact/shipping details
