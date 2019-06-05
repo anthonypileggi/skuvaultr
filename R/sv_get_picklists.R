@@ -2,20 +2,22 @@
 #' Get picklist given a set of SaleIds
 #' @param saleids saleid(s) (character/vector)
 #' @param data data returned from 'sv_get_sales'
+#' @importFrom magrittr "%>%"
+#' @export
 sv_get_picklists <- function(saleids, data = NULL) {
-  
+
   # load sales data (if not provided)
   if (is.null(data)) {
     data <- skuvaultr::sv_get_sales(order_id = saleid)
     if (nrow(data) != length(saleids))
       stop("Not all sales were found!")
   }
-  
+
   # get order contents
   order <- skuvaultr::sv_parse_order_contents(data)
   order <- dplyr::rename(order, picklist = Items)
   data <- dplyr::left_join(data, order, by = "Id")
-  
+
   # get item locations
   #   -- check if it can be fulfilled
   skus <- unique(dplyr::bind_rows(data$picklist)$Sku)
@@ -26,7 +28,7 @@ sv_get_picklists <- function(saleids, data = NULL) {
     dplyr::mutate(
       picklist = purrr::map(picklist, ~dplyr::left_join(.x, locs, by = "Sku"))
     )
-  
+
   # get fulfill/dropship status
   data <- data %>%
     dplyr::mutate(
@@ -50,7 +52,7 @@ sv_get_picklists <- function(saleids, data = NULL) {
             dplyr::pull(fulfill)
         })
     )
-  
+
   # account for items w/ multiple locations!
   # --> empty drop-ship bins as last resort
   # --> prioritized by bin location (i.e., alphabet)
@@ -83,9 +85,9 @@ sv_get_picklists <- function(saleids, data = NULL) {
         }
       )
     )
-  
+
   # restrict to selected columns
   data <- dplyr::select(data, Id, Status, fulfill, picklist)
-  
+
   return(data)
 }
