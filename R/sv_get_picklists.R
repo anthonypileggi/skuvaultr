@@ -8,7 +8,7 @@ sv_get_picklists <- function(saleids, data = NULL) {
 
   # load sales data (if not provided)
   if (is.null(data)) {
-    data <- skuvaultr::sv_get_sales(order_id = saleid)
+    data <- skuvaultr::sv_get_sales(order_id = saleids)
     if (nrow(data) != length(saleids))
       stop("Not all sales were found!")
   }
