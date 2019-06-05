@@ -80,6 +80,7 @@ sv_get_picklists <- function(saleids, data = NULL) {
               Quantity = Pick - Extra,
               LocationCode = ifelse(LocationCode == "ZZZ-DROP-SHIPS", "DROP-SHIPS", LocationCode)
             ) %>%
+            dplyr::ungroup() %>%
             dplyr::select(-Pick, -Total, -Extra) %>%
             dplyr::filter(Quantity > 0)
         }
