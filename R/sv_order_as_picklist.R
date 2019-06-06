@@ -50,6 +50,7 @@ sv_order_as_picklist <- function(saleid) {
       Quantity = Pick - Extra,
       LocationCode = ifelse(LocationCode == "ZZZ-DROP-SHIPS", "DROP-SHIPS", LocationCode)
     ) %>%
+    dplyr::ungroup() %>%
     dplyr::select(-Pick, -Total, -Extra) %>%
     dplyr::filter(Quantity > 0)
 
