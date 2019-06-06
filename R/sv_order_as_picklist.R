@@ -25,8 +25,8 @@ sv_order_as_picklist <- function(saleid) {
 
   # check if order can be fulfilled
   tmp <- picklist %>%
-    group_by(Sku) %>%
-    summarize(
+    dplyr::group_by(Sku) %>%
+    dplyr::summarize(
       Quantity = head(Quantity, 1),
       Available = sum(Available)
       )
