@@ -11,15 +11,10 @@ sv_order_as_picklist <- function(saleid) {
     stop(paste("Order", saleid, "not found!"))
 
   # get order contents
-  picklist <- NULL
-  if (nrow(order$SaleKits[[1]]) > 0)
-    picklist <- dplyr::bind_rows(picklist, purrr::map_df(order$SaleKits, ~.x$Items[[1]]))
-  if (nrow(order$SaleItems[[1]]) > 0)
-    picklist <- dplyr::bind_rows(picklist, purrr::map_df(order$SaleItems, ~dplyr::select(.x, Sku, Quantity)))
+  picklist <- sv_parse_order_contents(order)$Items[[1]]
 
   # get item locations
   locs <- skuvaultr::sv_get_inventory_locations(skus = picklist$Sku) %>%
-    dplyr::mutate_at("Sku", toupper) %>%
     dplyr::rename(Available = Quantity)
   picklist <- dplyr::left_join(picklist, locs, by = "Sku")
 
