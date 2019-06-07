@@ -5,6 +5,10 @@
 #' @export
 sv_get_kits <- function(skus = NULL, include_details = TRUE) {
 
+  # submit unique skus only
+  if (!is.null(skus))
+    skus <- unique(toupper(skus))
+
   products <-
     sv_api(
       path = "products/getKits",

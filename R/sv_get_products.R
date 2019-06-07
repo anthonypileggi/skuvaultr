@@ -2,6 +2,10 @@
 #' @export
 sv_get_products <- function(skus = NULL) {
 
+  # submit unique skus only
+  if (!is.null(skus))
+    skus <- unique(toupper(skus))
+
   # Iterate to get a full list of products
   products <- sv_api(path = "products/getProducts", PageSize = 10000, ProductSKUs = skus)
 
