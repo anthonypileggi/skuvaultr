@@ -10,7 +10,7 @@ sv_get_sales <- function(start_date = Sys.Date() - 14,
 
   # return a specific order
   if (!is.null(order_id))
-    return(sv_get_sales_7day(order_id = order_id))
+    return(sv_get_sales_7day(order_id = order_id, start_date = Sys.Date() - 1000, end_date = Sys.Date()))
 
   dates <- split_date_range(start_date, end_date, n = 7)
 
