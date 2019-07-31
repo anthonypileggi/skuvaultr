@@ -43,7 +43,7 @@ sv_get_inventory_value <- function(skus = NULL) {
     ) %>%
     dplyr::select(-Sku) %>%
     dplyr::rename(sku = AltSku) %>%
-    dplyr::group_by(Sku) %>%
+    dplyr::group_by(sku) %>%
     dplyr::summarize(
       quantity = sum(Quantity),
       cost = mean(Cost)
