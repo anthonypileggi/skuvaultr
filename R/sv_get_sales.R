@@ -34,7 +34,7 @@ sv_get_sales_7day <- function(start_date = Sys.Date() - 1,
 
   # impose API restrictions
   # TODO: auto-iterate to get all days of sale data
-  if (difftime(end_date, start_date, units = "day") > 7)
+  if (difftime(end_date, start_date, units = "day") > 7 & is.null(order_id))
     stop("Date range must be <= 7 days!", call. = FALSE)
   message("Collecting sales for [", start_date, "] - [", end_date, "]")
 
