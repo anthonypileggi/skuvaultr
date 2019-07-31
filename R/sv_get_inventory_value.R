@@ -3,12 +3,12 @@
 #' @importFrom magrittr "%>%"
 #' @export
 sv_get_inventory_value <- function(skus = NULL) {
-  
+
   # Compute total inventory value (static, right now)
   products <- sv_get_products(skus)
-  
+
   inventory <- sv_get_inventory_locations(skus)
-  
+
   # unfurl additional skus
   alt_products <- products %>%
     dplyr::select(Sku, Cost, AlternateSku) %>%
@@ -16,12 +16,19 @@ sv_get_inventory_value <- function(skus = NULL) {
     dplyr::mutate(
       Sku2 = purrr::map(AlternateSku, ~stringr::str_split(.x, "; ")[[1]])
     ) %>%
-    tidyr::unnest() %>%
-    dplyr::select(AltSku = Sku, Sku = Sku2, Cost)
-  all_products <- products %>%
-    dplyr::select(Sku, Description, Cost) %>%
-    dplyr::bind_rows(alt_products)
-  
+    tidyr::unnest()
+  if (nrow(alt_products) > 0) {
+    alt_products <- alt_products %>%
+      dplyr::select(AltSku = Sku, Sku = Sku2, Cost)
+    all_products <- products %>%
+      dplyr::select(Sku, Description, Cost) %>%
+      dplyr::bind_rows(alt_products)
+  } else {
+    all_products <- products %>%
+      dplyr::select(Sku, Description, Cost) %>%
+      dplyr::mutate(AltSku = NA_character_)
+  }
+
   # Summarize inventory value (excluding dropships)
   inventory %>%
     dplyr::filter(LocationCode != "DROP-SHIPS") %>%
@@ -35,14 +42,14 @@ sv_get_inventory_value <- function(skus = NULL) {
       )
     ) %>%
     dplyr::select(-Sku) %>%
-    dplyr::rename(Sku = AltSku) %>%
+    dplyr::rename(sku = AltSku) %>%
     dplyr::group_by(Sku) %>%
     dplyr::summarize(
-      Quantity = sum(Quantity),
-      Cost = mean(Cost)
+      quantity = sum(Quantity),
+      cost = mean(Cost)
     ) %>%
     dplyr::mutate(
-      Value = Cost * Quantity
+      value = cost * quantity
     ) %>%
-    dplyr::arrange(desc(Value)) 
+    dplyr::arrange(desc(value))
 }
