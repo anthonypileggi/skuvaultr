@@ -30,7 +30,7 @@ sv_get_inventory_value <- function(skus = NULL) {
   }
 
   # Summarize inventory value (excluding dropships)
-  inventory %>%
+  out <- inventory %>%
     dplyr::filter(LocationCode != "DROP-SHIPS") %>%
     dplyr::select(Sku, Quantity) %>%
     dplyr::left_join(all_products, by = "Sku") %>%
@@ -52,4 +52,14 @@ sv_get_inventory_value <- function(skus = NULL) {
       value = cost * quantity
     ) %>%
     dplyr::arrange(desc(value))
+
+  out %>%
+    dplyr::left_join(
+      inventory %>%
+        dplyr::rename(sku = Sku) %>%
+        dplyr::filter(LocationCode != "DROP-SHIPS") %>%
+        dplyr::group_by(sku) %>%
+        tidyr::nest(.key = "location"),
+      by = "sku"
+    )
 }
