@@ -4,12 +4,15 @@
 \alias{sv_get_orders}
 \title{Get order details (with kits unfolded)}
 \usage{
-sv_get_orders(start_date = Sys.Date() - 1, end_date = Sys.Date())
+sv_get_orders(start_date = Sys.Date() - 1, end_date = Sys.Date(),
+  order_id = NULL)
 }
 \arguments{
 \item{start_date}{first day of data (Date/scalar)}
 
 \item{end_date}{last day of data (Date/scalar)}
+
+\item{order_id}{saleids (character/vector)}
 }
 \description{
 Get order details (with kits unfolded)
