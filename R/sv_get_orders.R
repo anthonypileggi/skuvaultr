@@ -1,12 +1,13 @@
 #' Get order details (with kits unfolded)
 #' @param start_date first day of data (Date/scalar)
 #' @param end_date last day of data (Date/scalar)
+#' @param order_id saleids (character/vector)
 #' @importFrom magrittr "%>%"
 #' @export
-sv_get_orders <- function(start_date = Sys.Date() - 1, end_date = Sys.Date()) {
+sv_get_orders <- function(start_date = Sys.Date() - 1, end_date = Sys.Date(), order_id = NULL) {
 
   # get all stens dropship-eligble orders
-  sales <- sv_get_sales(start_date = start_date, end_date = end_date)
+  sales <- sv_get_sales(start_date = start_date, end_date = end_date, order_id = order_id)
 
   # extract order components
   out <- sv_parse_order_contents(sales)
