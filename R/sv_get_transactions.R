@@ -52,7 +52,8 @@ sv_get_transactions_7day <- function(start_date = Sys.Date() - 1,
   } else {
     out <- x %>%
       sv_parse_response() %>%
-      dplyr::mutate_at(c("TransactionDate"), sv_parse_datetime)
+      dplyr::mutate_at(c("TransactionDate"), sv_parse_datetime) %>%
+      dplyr::mutate_at(c("Sku", "Code"), toupper)
   }
 
   return(out)
