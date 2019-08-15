@@ -15,7 +15,7 @@ sv_get_sales_details <- function(...) {
     )
 
   # convert to 1 row per sku
-  v <- intersect(c("FulfilledKits", "MerchantKits", "FulfilledItems", "MerchantItems"), names(sales))
+  v <- intersect(c("SaleItems", "SaleKits", "FulfilledKits", "MerchantKits", "FulfilledItems", "MerchantItems"), names(sales))
   out <-
     purrr::map_df(
       v,
