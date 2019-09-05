@@ -10,8 +10,8 @@ sv_add_dropship_inventory <- function(skus, qty) {
   products <- sv_get_products(skus = skus)
   if (nrow(products) != length(skus))
     stop("Not all SKUs are valid!", call. = FALSE)
-  if (any(products$Classification != "Drop Ship"))
-    stop("All SKUs must be Drop Ships!", call. = FALSE)
+  # if (any(products$Classification != "Drop Ship"))
+  #   stop("All SKUs must be Drop Ships!", call. = FALSE)
 
   # prep for API
   out <- dplyr::tibble(
