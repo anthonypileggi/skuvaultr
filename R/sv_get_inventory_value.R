@@ -5,11 +5,11 @@
 sv_get_inventory_value <- function(skus = NULL) {
 
   # Compute total inventory value (static, right now)
+
+  # Load product data
   products <- sv_get_products(skus)
 
-  inventory <- sv_get_inventory_locations(skus)
-
-  # unfurl additional skus
+  # Unfurl additional skus
   alt_products <- products %>%
     dplyr::select(Sku, Cost, AlternateSku) %>%
     dplyr::filter(nchar(AlternateSku) > 0) %>%
@@ -29,12 +29,22 @@ sv_get_inventory_value <- function(skus = NULL) {
       dplyr::mutate(AltSku = NA_character_)
   }
 
-  # Summarize inventory value (excluding dropships)
-  out <- inventory %>%
-    dplyr::filter(LocationCode != "DROP-SHIPS") %>%
+  # Load inventory
+  if (!is.null(skus)) {
+    alt_skus <- all_products %>%
+      dplyr::filter(AltSku %in% skus) %>%
+      dplyr::pull(Sku)
+    skus <- c(skus, alt_skus)
+  }
+  inventory <- sv_get_inventory_locations(skus)
+
+  # Ignore dropships
+  out <- dplyr::filter(inventory, LocationCode != "DROP-SHIPS")
+
+  # Replace AltSku with base SKU
+  out <- out %>%
     dplyr::select(Sku, Quantity) %>%
     dplyr::left_join(all_products, by = "Sku") %>%
-    tidyr::replace_na(list(Quantity = 0)) %>%
     dplyr::mutate(
       AltSku = dplyr::case_when(
         is.na(AltSku) ~ Sku,
@@ -45,14 +55,18 @@ sv_get_inventory_value <- function(skus = NULL) {
     dplyr::rename(sku = AltSku) %>%
     dplyr::group_by(sku) %>%
     dplyr::summarize(
-      quantity = sum(Quantity),
+      quantity = mean(Quantity),
       cost = mean(Cost)
-    ) %>%
+    )
+
+  # Summarize inventory value (excluding dropships)
+  out <- out %>%
     dplyr::mutate(
       value = cost * quantity
     ) %>%
     dplyr::arrange(desc(value))
 
+  # Attach location(s)
   out %>%
     dplyr::left_join(
       inventory %>%
