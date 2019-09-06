@@ -38,8 +38,21 @@ sv_get_inventory_value <- function(skus = NULL) {
   }
   inventory <- sv_get_inventory_locations(skus)
 
-  # Ignore dropships
-  out <- dplyr::filter(inventory, LocationCode != "DROP-SHIPS")
+  # Attach out-of-stocks SKUs
+  if (nrow(inventory) == 0) {
+     inventory <- products %>%
+       dplyr::select(Sku) %>%
+       dplyr::mutate(WarehouseCode = "WH1", LocationCode = "Unknown", Quantity = 0, Reserve = F)
+  } else {
+    inventory <- products %>%
+      dplyr::select(Sku) %>%
+      dplyr::full_join(inventory, by = "Sku") %>%
+      tidyr::replace_na(list(WarehouseCode = "WH1", LocationCode = "Unknown", Quantity = 0, Reserve = F))
+  }
+
+  # Ignore dropship inventory
+  #out <- dplyr::filter(inventory, LocationCode != "DROP-SHIPS")
+  out <- dplyr::mutate(inventory, quantity = ifelse(LocationCode == "DROP-SHIPS", 0, quantity))
 
   # Replace AltSku with base SKU
   out <- out %>%
