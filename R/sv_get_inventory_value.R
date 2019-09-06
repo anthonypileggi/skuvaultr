@@ -52,7 +52,7 @@ sv_get_inventory_value <- function(skus = NULL) {
 
   # Ignore dropship inventory
   #out <- dplyr::filter(inventory, LocationCode != "DROP-SHIPS")
-  out <- dplyr::mutate(inventory, quantity = ifelse(LocationCode == "DROP-SHIPS", 0, quantity))
+  out <- dplyr::mutate(inventory, Quantity = ifelse(LocationCode == "DROP-SHIPS", 0, Quantity))
 
   # Replace AltSku with base SKU
   out <- out %>%
