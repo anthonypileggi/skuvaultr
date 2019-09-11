@@ -11,7 +11,8 @@ sv_get_sales_details <- function(...) {
   sales <- sales %>%
     dplyr::filter(
       Status %in% c("Completed", "ReadyToShip"),
-      Marketplace != "TransferSaleHoldsPendingQuantity"
+      Marketplace != "TransferSaleHoldsPendingQuantity",
+      !stringr::str_detect(MarketplaceId, "EASYPOST")
     )
 
   # convert to 1 row per sku
