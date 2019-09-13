@@ -46,7 +46,9 @@ sv_get_inventory_value <- function(skus = NULL) {
   } else {
     inventory <- products %>%
       dplyr::select(Sku) %>%
-      dplyr::full_join(inventory, by = "Sku") %>%
+      dplyr::full_join(
+        dplyr::filter(inventory, LocationCode != "DROP-SHIPS"),
+        by = "Sku") %>%
       tidyr::replace_na(list(WarehouseCode = "WH1", LocationCode = "Unknown", Quantity = 0, Reserve = F))
   }
 
@@ -84,7 +86,6 @@ sv_get_inventory_value <- function(skus = NULL) {
     dplyr::left_join(
       inventory %>%
         dplyr::rename(sku = Sku) %>%
-        dplyr::filter(LocationCode != "DROP-SHIPS") %>%
         dplyr::group_by(sku) %>%
         tidyr::nest(.key = "location"),
       by = "sku"
