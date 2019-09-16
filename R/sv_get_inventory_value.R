@@ -58,7 +58,6 @@ sv_get_inventory_value <- function(skus = NULL) {
 
   # Replace AltSku with base SKU
   out <- out %>%
-    dplyr::select(Sku, Quantity) %>%
     dplyr::left_join(all_products, by = "Sku") %>%
     dplyr::mutate(
       AltSku = dplyr::case_when(
@@ -66,12 +65,14 @@ sv_get_inventory_value <- function(skus = NULL) {
         TRUE          ~ AltSku
       )
     ) %>%
+    #dplyr::filter(AltSku %in% c("692187", "731-09312"))  %>%
     dplyr::select(-Sku) %>%
     dplyr::rename(sku = AltSku) %>%
-    dplyr::group_by(sku) %>%
+    dplyr::group_by(sku, LocationCode) %>%
+    dplyr::summarize_at(dplyr::vars(Quantity, Cost), mean, na.rm = T) %>%
     dplyr::summarize(
-      quantity = mean(Quantity),
-      cost = mean(Cost)
+      quantity = sum(Quantity, na.rm = T),
+      cost = weighted.mean(Cost, Quantity, na.rm = T)
     )
 
   # Summarize inventory value (excluding dropships)
