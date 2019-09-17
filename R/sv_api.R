@@ -61,6 +61,7 @@ sv_api_call <- function(path, ...) {
   if ("KitSKUs" %in% names(my_json) && length(my_json$KitSKUs) == 1 && path %in% c("products/getKits")) {
     response <- httr::POST(url, body = my_json)
   } else {
+    #my_json <- jsonlite::toJSON(my_json, force = T, auto_unbox = T)
     response <- httr::POST(url, body = my_json, encode = "json")
   }
 
