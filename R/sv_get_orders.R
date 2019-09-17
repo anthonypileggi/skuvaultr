@@ -14,7 +14,7 @@ sv_get_orders <- function(start_date = Sys.Date() - 1, end_date = Sys.Date(), or
 
   # attach item classifications
   out <- out %>%
-    tidyr::unnest() %>%
+    tidyr::unnest(Items) %>%
     dplyr::mutate_at("Sku", toupper) %>%
     dplyr::left_join(
       skuvaultr::sv_get_products(skus = unique(.$Sku)) %>%
@@ -33,11 +33,14 @@ sv_get_orders <- function(start_date = Sys.Date() - 1, end_date = Sys.Date(), or
   # get contact/shipping details
   order_ship <- sales %>%
     dplyr::select(Id, Status, SaleDate, Marketplace, ShippingClass, Client, ShippingInfo, ContactInfo) %>%
-    tidyr::unnest()
+    tidyr::unnest(c(ShippingInfo, ContactInfo))
 
   # attach order class and additional details
   out <- out %>%
-    tidyr::nest(-Id, .key = "Items") %>%
+    tidyr::nest(Items = c(Sku, Quantity, Classification, Supplier, QuantityAvailable)) %>%
+    dplyr::mutate(
+      Items = purrr::map(Items, ~.x)
+    ) %>%
     dplyr::left_join(order_class, by = "Id") %>%
     dplyr::left_join(order_ship, by = "Id")
 

@@ -39,7 +39,7 @@ sv_get_kits <- function(skus = NULL, include_details = TRUE) {
   ) %>%
     dplyr::mutate_at(
       c("LastModifiedDateTimeUtc", "AvailableQuantityLastModifiedDateTimeUtc"),
-      sv_parse_datetime
+      skuvaultr:::sv_parse_datetime
       )
 
   # include kit details (upon request)
@@ -62,7 +62,7 @@ sv_get_kit_details <- function(kits) {
   # get SKUs contained within each kit
   kit_items <- kits %>%
     dplyr::select(Sku, KitLines) %>%
-    tidyr::unnest() %>%
+    tidyr::unnest(KitLines) %>%
     dplyr::mutate_at(c("Code", "SKU"), toupper)
 
   # get weights for base SKUs; sum weights over kit items

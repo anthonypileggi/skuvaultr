@@ -17,7 +17,7 @@ sv_get_product_inventory <- function() {
   kits <- sv_get_kits()
   kit_details <- kits %>%
     dplyr::select(Sku, KitLines) %>%
-    tidyr::unnest() %>%
+    tidyr::unnest(KitLines) %>%
     dplyr::group_by(Sku) %>%
     dplyr::mutate(n_skus = dplyr::n_distinct(SKU)) %>%
     dplyr::group_by(SKU) %>%

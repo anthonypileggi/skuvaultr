@@ -20,10 +20,10 @@ sv_get_sales_details <- function(...) {
   out <-
     purrr::map_df(
       v,
-      function(v) {
+      function(vv) {
         out <- sales %>%
-          dplyr::select(Id:Marketplace, v, ShippingCost) %>%
-          tidyr::unnest()
+          dplyr::select(Id:Marketplace, vv, ShippingCost) %>%
+          tidyr::unnest(vv)
         if ("Price" %in% names(out))
           out <- dplyr::mutate(out, Price = as.numeric(stringr::str_sub(Price, 2, -1)))
         if ("ShippingCost" %in% names(out))

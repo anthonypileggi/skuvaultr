@@ -16,7 +16,7 @@ sv_get_inventory_value <- function(skus = NULL) {
     dplyr::mutate(
       Sku2 = purrr::map(AlternateSku, ~stringr::str_split(.x, "; ")[[1]])
     ) %>%
-    tidyr::unnest()
+    tidyr::unnest(Sku2)
   if (nrow(alt_products) > 0) {
     alt_products <- alt_products %>%
       dplyr::select(AltSku = Sku, Sku = Sku2, Cost)
@@ -88,8 +88,10 @@ sv_get_inventory_value <- function(skus = NULL) {
       inventory %>%
         dplyr::rename(sku = Sku) %>%
         dplyr::group_by(sku) %>%
-        tidyr::nest() %>%
-        dplyr::rename(location = data),
+        tidyr::nest(location = c(WarehouseCode, LocationCode, Quantity, Reserve)) %>%
+        dplyr::mutate(
+          location = purrr::map(location, ~.x)
+        ),
       by = "sku"
     )
 }
