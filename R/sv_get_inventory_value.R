@@ -88,7 +88,8 @@ sv_get_inventory_value <- function(skus = NULL) {
       inventory %>%
         dplyr::rename(sku = Sku) %>%
         dplyr::group_by(sku) %>%
-        tidyr::nest(.key = "location"),
+        tidyr::nest() %>%
+        dplyr::rename(location = data),
       by = "sku"
     )
 }
