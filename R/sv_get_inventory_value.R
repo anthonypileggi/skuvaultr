@@ -78,7 +78,7 @@ sv_get_inventory_value <- function(skus = NULL) {
   # Summarize inventory value (excluding dropships)
   out <- out %>%
     dplyr::mutate(
-      value = cost * quantity
+      value = ifelse(quantity == 0, 0, cost * quantity)
     ) %>%
     dplyr::arrange(desc(value))
 
