@@ -4,8 +4,11 @@
 \alias{sv_get_sales_7day}
 \title{Get sales (<= 7 days only)}
 \usage{
-sv_get_sales_7day(start_date = Sys.Date() - 1, end_date = Sys.Date() -
-  1, order_id = NULL)
+sv_get_sales_7day(
+  start_date = Sys.Date() - 1,
+  end_date = Sys.Date() - 1,
+  order_id = NULL
+)
 }
 \arguments{
 \item{start_date}{first day of data (Date/scalar)}

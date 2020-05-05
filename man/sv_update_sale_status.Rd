@@ -4,8 +4,11 @@
 \alias{sv_update_sale_status}
 \title{Update the status of a sale}
 \usage{
-sv_update_sale_status(saleid, status = c("Completed", "Cancelled",
-  "Pending", "ReadyToShip", "Invalid", "ShippedUnpaid"))
+sv_update_sale_status(
+  saleid,
+  status = c("Completed", "Cancelled", "Pending", "ReadyToShip", "Invalid",
+    "ShippedUnpaid")
+)
 }
 \arguments{
 \item{saleid}{saleID of the order (character/vector)}

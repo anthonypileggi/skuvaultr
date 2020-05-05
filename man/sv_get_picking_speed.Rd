@@ -4,8 +4,11 @@
 \alias{sv_get_picking_speed}
 \title{Get picking speed (overall; user-specific)}
 \usage{
-sv_get_picking_speed(start_date = Sys.Date(), end_date = Sys.Date(),
-  show_plot = TRUE)
+sv_get_picking_speed(
+  start_date = Sys.Date(),
+  end_date = Sys.Date(),
+  show_plot = TRUE
+)
 }
 \arguments{
 \item{start_date}{first day of data (Date/scalar)}

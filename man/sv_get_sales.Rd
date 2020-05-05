@@ -4,8 +4,11 @@
 \alias{sv_get_sales}
 \title{Get sales}
 \usage{
-sv_get_sales(start_date = Sys.Date() - 14, end_date = Sys.Date() - 1,
-  order_id = NULL)
+sv_get_sales(
+  start_date = Sys.Date() - 14,
+  end_date = Sys.Date() - 1,
+  order_id = NULL
+)
 }
 \arguments{
 \item{start_date}{first day of data (Date/scalar)}

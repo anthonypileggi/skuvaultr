@@ -4,8 +4,10 @@
 \alias{sv_get_tokens}
 \title{Get a SkuVault API token set (TenantToken/UserToken)}
 \usage{
-sv_get_tokens(email = Sys.getenv("SKU_VAULT_EMAIL"),
-  password = Sys.getenv("SKU_VAULT_PASSWORD"))
+sv_get_tokens(
+  email = Sys.getenv("SKU_VAULT_EMAIL"),
+  password = Sys.getenv("SKU_VAULT_PASSWORD")
+)
 }
 \arguments{
 \item{email}{SkuVault account email address}
