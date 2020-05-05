@@ -35,15 +35,23 @@ sv_order_as_picklist <- function(saleid) {
   picklist <- picklist %>%
     dplyr::group_by(Sku) %>%
     dplyr::mutate(
-      LocationCode = ifelse(LocationCode == "DROP-SHIPS", "ZZZ-DROP-SHIPS", LocationCode)
+      LocationCode = ifelse(
+        LocationCode %in% sv_dropship_locs(),
+        paste0("ZZZ-", LocationCode),
+        LocationCode
+      )
     ) %>%
-    dplyr::arrange(LocationCode) %>%
+    dplyr::arrange(LocationCode) %>%    # dropship suppliers prioritized A-Z
     dplyr::mutate(
       Pick = purrr::map2_dbl(Quantity, Available, ~min(c(.x, .y))),
       Total = cumsum(Pick),
       Extra = ifelse(Total > Quantity, Total - Quantity, 0),
       Quantity = Pick - Extra,
-      LocationCode = ifelse(LocationCode == "ZZZ-DROP-SHIPS", "DROP-SHIPS", LocationCode)
+      LocationCode = ifelse(
+        stringr::str_detect(LocationCode, "ZZZ-"),
+        stringr::str_replace(LocationCode, "ZZZ-", ""),
+        LocationCode
+      )
     ) %>%
     dplyr::ungroup() %>%
     dplyr::select(-Pick, -Total, -Extra) %>%

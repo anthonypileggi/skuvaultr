@@ -21,7 +21,7 @@ sv_get_picklists <- function(saleids, data = NULL) {
   # get item locations
   #   -- check if it can be fulfilled
   skus <- unique(dplyr::bind_rows(data$picklist)$Sku)
-  locs <- skuvaultr::sv_get_inventory_locations(skus = skus) %>%
+  locs <- sv_get_inventory_locations(skus = skus) %>%
     dplyr::mutate_at("Sku", toupper) %>%
     dplyr::rename(Available = Quantity)
   data <- data %>%
@@ -38,8 +38,8 @@ sv_get_picklists <- function(saleids, data = NULL) {
             dplyr::group_by(Sku) %>%
             dplyr::summarize(
               Quantity = head(Quantity, 1),
-              in_house = sum(Available[LocationCode != "DROP-SHIPS"]),
-              dropship = sum(Available[LocationCode == "DROP-SHIPS"])
+              in_house = sum(Available[!(LocationCode %in% sv_dropship_locs())]),
+              dropship = sum(Available[LocationCode %in% sv_dropship_locs()])
             ) %>%
             dplyr::summarize(
               fulfill = dplyr::case_when(
@@ -63,22 +63,30 @@ sv_get_picklists <- function(saleids, data = NULL) {
         picklist, fulfill,
         function(p, f) {
           if (f == "in-house") {
-            p <- dplyr::filter(p, LocationCode != "DROP-SHIPS")
+            p <- dplyr::filter(p, !(LocationCode %in% sv_dropship_locs()))
           } else if (f == "dropship") {
-            p <- dplyr::filter(p, LocationCode == "DROP-SHIPS")
+            p <- dplyr::filter(p, LocationCode %in% sv_dropship_locs())
           }
           p %>%
             dplyr::group_by(Sku) %>%
             dplyr::mutate(
-              LocationCode = ifelse(LocationCode == "DROP-SHIPS", "ZZZ-DROP-SHIPS", LocationCode)
+              LocationCode = ifelse(
+                LocationCode %in% sv_dropship_locs(),
+                paste0("ZZZ-", LocationCode),
+                LocationCode
+                )
             ) %>%
-            dplyr::arrange(LocationCode) %>%
+            dplyr::arrange(LocationCode) %>%   # dropship suppliers prioritized A-Z
             dplyr::mutate(
               Pick = purrr::map2_dbl(Quantity, Available, ~min(c(.x, .y))),
               Total = cumsum(Pick),
               Extra = ifelse(Total > Quantity, Total - Quantity, 0),
               Quantity = Pick - Extra,
-              LocationCode = ifelse(LocationCode == "ZZZ-DROP-SHIPS", "DROP-SHIPS", LocationCode)
+              LocationCode = ifelse(
+                stringr::str_detect(LocationCode, "ZZZ-"),
+                stringr::str_replace(LocationCode, "ZZZ-", ""),
+                LocationCode
+                )
             ) %>%
             dplyr::ungroup() %>%
             dplyr::select(-Pick, -Total, -Extra) %>%

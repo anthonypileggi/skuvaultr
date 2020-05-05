@@ -47,14 +47,16 @@ sv_get_inventory_value <- function(skus = NULL) {
     inventory <- products %>%
       dplyr::select(Sku) %>%
       dplyr::full_join(
-        dplyr::filter(inventory, LocationCode != "DROP-SHIPS"),
+        dplyr::filter(inventory, !(LocationCode %in% sv_dropship_locs())),
         by = "Sku") %>%
       tidyr::replace_na(list(WarehouseCode = "WH1", LocationCode = "Unknown", Quantity = 0, Reserve = F))
   }
 
   # Ignore dropship inventory
-  #out <- dplyr::filter(inventory, LocationCode != "DROP-SHIPS")
-  out <- dplyr::mutate(inventory, Quantity = ifelse(LocationCode == "DROP-SHIPS", 0, Quantity))
+  out <- inventory %>%
+    dplyr::mutate(
+      Quantity = ifelse(LocationCode %in% sv_dropship_locs(), 0, Quantity)
+    )
 
   # Replace AltSku with base SKU
   out <- out %>%
