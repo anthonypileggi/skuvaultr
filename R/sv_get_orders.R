@@ -32,7 +32,7 @@ sv_get_orders <- function(start_date = Sys.Date() - 1, end_date = Sys.Date(), or
 
   # get contact/shipping details
   order_ship <- sales %>%
-    dplyr::select(Id, Status, SaleDate, Marketplace, ShippingClass, Client, ShippingInfo, ContactInfo) %>%
+    dplyr::select(Id, Status, SaleDate, Marketplace, ShippingClass, PrintedStatus, Client, ShippingInfo, ContactInfo) %>%
     tidyr::unnest(c(ShippingInfo, ContactInfo))
 
   # attach order class and additional details
