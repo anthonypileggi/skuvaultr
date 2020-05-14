@@ -56,20 +56,7 @@ sv_get_sales_details <- function(...) {
     )
 
   # attach Channel/FBA status
-  channels <- sales %>%
-    dplyr::mutate(
-      is_fulfilled = purrr::map2_lgl(FulfilledItems, FulfilledKits, ~nrow(.x) > 0 | nrow(.y) > 0),
-      Channel = dplyr::case_when(
-        Marketplace == "Amazon Seller Central - US" & is_fulfilled  ~ "Amazon FBA",
-        Marketplace == "Amazon Seller Central - US" & !is_fulfilled ~ "Amazon",
-        Marketplace == "eBay Fixed Price"                           ~ "eBay",
-        Marketplace == "Unknown"                                    ~ "Pricefalls",
-        Marketplace == "Manual"                                     ~ "Service/Returns",
-        Marketplace == "Walmart Marketplace"                        ~ "Walmart",
-        TRUE                                                        ~ Marketplace
-      )
-    ) %>%
-    dplyr::select(Id, Channel)
+  channels <- sv_parse_channel(sales)
   out <- dplyr::left_join(out, channels, by = "Id")
 
   as_sales_details(out)
