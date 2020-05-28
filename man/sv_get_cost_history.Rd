@@ -4,10 +4,7 @@
 \alias{sv_get_cost_history}
 \title{Construct cost history}
 \usage{
-sv_get_cost_history(skus = "hon1010")
-}
-\arguments{
-\item{skus}{skus (character/vector)}
+sv_get_cost_history()
 }
 \description{
 Construct cost history
