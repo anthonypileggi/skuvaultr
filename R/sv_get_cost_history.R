@@ -32,7 +32,7 @@ sv_get_cost_history <- function() {
           #cat(s, "\n")
           x %>%
             dplyr::full_join(
-              dplyr::tibble(Date = seq(min(x$Date), max(x$Date), by = "day")),
+              dplyr::tibble(Date = seq(min(x$Date), Sys.Date(), by = "day")),
               by = "Date"
             ) %>%
             dplyr::arrange(Date) %>%
