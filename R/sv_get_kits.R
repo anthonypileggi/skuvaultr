@@ -44,11 +44,13 @@ sv_get_kits <- function(skus = NULL, include_details = TRUE) {
 
   # include kit details (upon request)
   #  - {weight, brand}
-  if (include_details)
+  #   - to uppercase
+  if (include_details) {
     kits <- sv_get_kit_details(kits)
-
-  # uppercase
-  kits <- dplyr::mutate_at(kits, dplyr::vars(Sku, Code, PartNumber), toupper)
+    kits <- dplyr::mutate_at(kits, dplyr::vars(Sku, Code, PartNumber), toupper)
+  } else {
+    kits <- dplyr::mutate_at(kits, dplyr::vars(Sku, Code), toupper)
+  }
 
   return(kits)
 }
