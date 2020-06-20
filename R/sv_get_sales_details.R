@@ -15,6 +15,17 @@ sv_get_sales_details <- function(...) {
       !stringr::str_detect(MarketplaceId, "EASYPOST")
     )
 
+  # TODO: Ignore duplicate orders (from shipstation integration switchover)
+  sales <- sales %>%
+    dplyr::mutate(
+      ID = purrr::map_chr(Id, ~tail(stringr::str_split(.x, "-")[[1]], 1))
+    ) %>%
+    dplyr::arrange(ID, Id) %>%
+    dplyr::group_by(ID) %>%
+    dplyr::slice(1) %>%
+    dplyr::ungroup()
+
+
   # convert to 1 row per sku
   v <- intersect(c("SaleItems", "SaleKits", "FulfilledKits", "MerchantKits", "FulfilledItems", "MerchantItems"), names(sales))
   out <-
