@@ -70,6 +70,7 @@ sv_update_po_costs <- function(data) {
       PurchaseOrderId = PoId,
       PoNumber,
       PaymentStatus = "FullyPaid",
+      SentStatus = "Sent",
       SKU,
       Quantity,          # keep qty in skuvalt
       QuantityTo3PL,
