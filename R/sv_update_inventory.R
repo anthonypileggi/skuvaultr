@@ -10,8 +10,8 @@ sv_update_inventory <- function(skus, qty, locs, type = c("add", "remove")) {
   type <- match.arg(type)
   if (length(qty) != length(skus) & length(qty) != 1)
     stop("Input `qty` must be length 1 or the same length as `skus`!", call. = FALSE)
-  products <- sv_get_products(skus = skus)
-  if (nrow(products) != length(skus))
+  products <- sv_get_products(skus = unique(skus))
+  if (!all(skus %in% products$Sku))
     stop("Not all SKUs are valid!", call. = FALSE)
 
   # prep for API
