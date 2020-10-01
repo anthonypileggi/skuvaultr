@@ -45,26 +45,25 @@ sv_update_po_costs <- function(data) {
   message(paste0("Updating PO costs for ", n_updates, "/", nrow(out), " SKUs"))
 
 
-  # update cost field  <--- will be deprecated!
-  # --> pull in COST field in skuvault product data (not PO)
-  products <- skuvaultr::sv_get_products(out$SKU) %>%
-    dplyr::select(Sku, Cost)
-  updates <- out %>%
-    dplyr::select(Sku = SKU, new_cost) %>%
-    dplyr::left_join(products, by = "Sku") %>%
-    dplyr::filter(
-      !is.na(new_cost) & abs(new_cost - Cost) >= .01
-      ) %>%
-    dplyr::select(Sku, Cost = new_cost)
-  if (nrow(updates) > 0) {
-    message((paste0("Updating product costs for ", nrow(updates), " SKUs...")))
-    skuvaultr::sv_update_products(updates)
-  }
+  # # update cost field  <--- will be deprecated!
+  # # --> pull in COST field in skuvault product data (not PO)
+  # products <- skuvaultr::sv_get_products(out$SKU) %>%
+  #   dplyr::select(Sku, Cost)
+  # updates <- out %>%
+  #   dplyr::select(Sku = SKU, new_cost) %>%
+  #   dplyr::left_join(products, by = "Sku") %>%
+  #   dplyr::filter(
+  #     !is.na(new_cost) & abs(new_cost - Cost) >= .01
+  #     ) %>%
+  #   dplyr::select(Sku, Cost = new_cost)
+  # if (nrow(updates) > 0) {
+  #   message((paste0("Updating product costs for ", nrow(updates), " SKUs...")))
+  #   skuvaultr::sv_update_products(updates)
+  # }
 
 
-  # update PO in Skuvault (when updated are needed)
-  if (nrow(updates) == 0)
-    return()
+  # update PO in Skuvault
+  # -- if no updates, still set PaymentStatus field
   out <- out %>%
     dplyr::transmute(
       PurchaseOrderId = PoId,
