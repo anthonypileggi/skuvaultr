@@ -35,7 +35,9 @@ sv_pick_order <- function(saleid = NULL, picklist = NULL) {
       LocationCode = LocationCode,
       Quantity = Quantity,
       IsExpressPick = FALSE,
-      Note = "Picked using API"
+      Note = "Picked using API",
+      AllowPickItemNotInSale = TRUE,
+      AllowPickQuantityGreaterThanRemainingSaleQuantity = TRUE
     )
 
   # pick order
