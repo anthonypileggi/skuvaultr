@@ -6,11 +6,11 @@ sv_get_transactions <- function(start_date = Sys.Date() - 14,
                                 end_date = Sys.Date() - 1,
                                 sale_id = NULL) {
 
+  dates <- split_date_range(start_date, end_date, n = 7)
+
   # return transactions for a specific order
   if (!is.null(sale_id))
     return(sv_get_transactions_7day(dates$start, dates$end, sale_id = sale_id))
-
-  dates <- split_date_range(start_date, end_date, n = 7)
 
   purrr::map2_df(dates$start, dates$end, function(x, y) {
     Sys.sleep(12)
