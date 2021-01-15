@@ -35,7 +35,7 @@ sv_get_product_inventory <- function() {
       dplyr::left_join(kit_details, by = "Sku") %>%
       dplyr::select(
         Sku, PartNumber, Description, Classification, Brand, Supplier, Statuses,
-        Cost, Price = SalePrice, Weight, QuantityAvailable, QuantityIncoming, n_kits, kits, is_simple
+        Cost, Price = SalePrice, MSRP = RetailPrice, Weight, QuantityAvailable, QuantityIncoming, n_kits, kits, is_simple
         ) %>%
       dplyr::mutate(Type = "product"),
     kits %>%
