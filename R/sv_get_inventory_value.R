@@ -6,6 +6,9 @@ sv_get_inventory_value <- function(skus = NULL) {
 
   # Compute total inventory value (static, right now)
 
+  # LOCations to ignore for inventory calcs
+  ignore_locs <- c(skuvaultr::sv_dropship_locs(), "WHOLEGOODS")
+
   # Load product data
   products <- sv_get_products(skus)
 
@@ -47,7 +50,7 @@ sv_get_inventory_value <- function(skus = NULL) {
     inventory <- products %>%
       dplyr::select(Sku) %>%
       dplyr::full_join(
-        dplyr::filter(inventory, !(LocationCode %in% sv_dropship_locs())),
+        dplyr::filter(inventory, !(LocationCode %in% ignore_locs)),
         by = "Sku") %>%
       tidyr::replace_na(list(WarehouseCode = "WH1", LocationCode = "Unknown", Quantity = 0, Reserve = F))
   }
@@ -55,7 +58,7 @@ sv_get_inventory_value <- function(skus = NULL) {
   # Ignore dropship inventory
   out <- inventory %>%
     dplyr::mutate(
-      Quantity = ifelse(LocationCode %in% sv_dropship_locs(), 0, Quantity)
+      Quantity = ifelse(LocationCode %in% ignore_locs, 0, Quantity)
     )
 
   # Replace AltSku with base SKU
