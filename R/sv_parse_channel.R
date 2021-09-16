@@ -4,13 +4,14 @@
 #' @importFrom magrittr "%>%"
 #' @export
 sv_parse_channel <- function(x) {
-  
+
   x %>%
     dplyr::mutate(
       is_fulfilled = purrr::map2_lgl(FulfilledItems, FulfilledKits, ~nrow(.x) > 0 | nrow(.y) > 0),
       Channel = dplyr::case_when(
         Marketplace == "Amazon Seller Central - US" & is_fulfilled  ~ "Amazon FBA",
         Marketplace == "Amazon Seller Central - US" & !is_fulfilled ~ "Amazon",
+        Marketplace == "Amazon Seller Central - CA"                 ~ "Amazon CA",
         Marketplace == "eBay Fixed Price"                           ~ "eBay",
         Marketplace == "Unknown"                                    ~ "Pricefalls",
         Marketplace == "Manual"                                     ~ "Service/Returns",
@@ -19,5 +20,5 @@ sv_parse_channel <- function(x) {
       )
     ) %>%
     dplyr::select(Id, Channel)
-  
+
 }
