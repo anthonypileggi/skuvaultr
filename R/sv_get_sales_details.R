@@ -12,7 +12,7 @@ sv_get_sales_details <- function(...) {
     dplyr::filter(
       Status %in% c("Completed", "ReadyToShip"),
       Marketplace != "TransferSaleHoldsPendingQuantity",
-      !stringr::str_detect(MarketplaceId, "EASYPOST|GARDNER")
+      !stringr::str_detect(MarketplaceId, "EASYPOST|GARDNER|HONDA|STENS|HUSQVARNA|KAWASAKI|ROTARY")
     )
 
   # TODO: Ignore duplicate orders (from shipstation integration switchover)
