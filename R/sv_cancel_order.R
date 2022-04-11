@@ -17,11 +17,17 @@ sv_cancel_order <- function(saleid) {
     stop("Cannot unpick order due to out-of-stock")
 
   # load warehouse ids
-  warehouses <- sv_get_warehouses() %>%
-    dplyr::select(
-      WarehouseCode = Code,
-      WarehouseId = Id
-    )
+  # -- endpoint severely throttled so hard-coding this for now...
+  # warehouses <- sv_get_warehouses() %>%
+  #   dplyr::select(
+  #     WarehouseCode = Code,
+  #     WarehouseId = Id
+  #   )
+  warehouses <- dplyr::tribble(
+    ~WarehouseCode, ~WarehouseId,
+    "WH1",          2640,
+    "WH2",          24576
+  )
 
   # add inventory back into warehouse (if already picked)
   if (order$status %in% c("ReadyToShip", "Completed")) {

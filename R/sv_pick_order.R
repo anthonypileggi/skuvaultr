@@ -27,11 +27,17 @@ sv_pick_order <- function(saleid = NULL, picklist = NULL) {
     stop("Picklist does not have required fields!")
 
   # load warehouse ids
-  warehouses <- sv_get_warehouses() %>%
-    dplyr::select(
-      WarehouseCode = Code,
-      WarehouseId = Id
-    )
+  # -- endpoint severely throttled so hard-coding this for now...
+  # warehouses <- sv_get_warehouses() %>%
+  #   dplyr::select(
+  #     WarehouseCode = Code,
+  #     WarehouseId = Id
+  #   )
+  warehouses <- dplyr::tribble(
+    ~WarehouseCode, ~WarehouseId,
+    "WH1",          2640,
+    "WH2",          24576
+  )
 
   # prepare picklist
   picklist <- picklist %>%
