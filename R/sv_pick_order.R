@@ -26,12 +26,20 @@ sv_pick_order <- function(saleid = NULL, picklist = NULL) {
   if (!all(c("Id", "Sku", "Quantity", "LocationCode", "Available") %in% names(picklist)))
     stop("Picklist does not have required fields!")
 
+  # load warehouse ids
+  warehouses <- sv_get_warehouses() %>%
+    dplyr::select(
+      WarehouseCode = Code,
+      WarehouseId = Id
+    )
+
   # prepare picklist
   picklist <- picklist %>%
+    dplyr::left_join(warehouses, by = "WarehouseCode") %>%
     dplyr::transmute(
       SaleId = Id,
       Sku = Sku,
-      WarehouseId = 2640,    # WH1
+      WarehouseId = WarehouseId,
       LocationCode = LocationCode,
       Quantity = Quantity,
       IsExpressPick = FALSE,
