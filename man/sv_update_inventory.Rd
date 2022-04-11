@@ -4,14 +4,22 @@
 \alias{sv_update_inventory}
 \title{Update inventory (add/remove)}
 \usage{
-sv_update_inventory(skus, qty, locs, type = c("add", "remove"))
+sv_update_inventory(
+  skus,
+  qty,
+  locs,
+  warehouse = "WH1",
+  type = c("add", "remove")
+)
 }
 \arguments{
 \item{skus}{skus to add quantity}
 
 \item{qty}{quantity to add (must be same length as `skus`, or length 1)}
 
-\item{locs}{locations to add them too (must be same length as `skus`, or length 1)}
+\item{locs}{locations to add them to (must be same length as `skus`, or length 1)}
+
+\item{warehouse}{warehouse to add them to}
 
 \item{type}{add/remove (scalar/character, must choose one)}
 }
