@@ -1,6 +1,7 @@
 #' Add drop-ship inventory to skuvault
 #' @param skus skus to add quantity
 #' @param qty quantity to add (must be same length as `skus`, or length 1)
+#' @param locs locations to add (must be same length as `skus`, or length 1)
 #' @export
 sv_add_dropship_inventory <- function(skus, qty, locs = c("STENS", "ROTARY", "POWER", "RBI", "GARDNER")) {
 

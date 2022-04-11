@@ -4,7 +4,11 @@
 \alias{sv_add_dropship_inventory}
 \title{Add drop-ship inventory to skuvault}
 \usage{
-sv_add_dropship_inventory(skus, qty)
+sv_add_dropship_inventory(
+  skus,
+  qty,
+  locs = c("STENS", "ROTARY", "POWER", "RBI", "GARDNER")
+)
 }
 \arguments{
 \item{skus}{skus to add quantity}
