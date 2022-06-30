@@ -14,6 +14,8 @@ sv_add_dropship_inventory(
 \item{skus}{skus to add quantity}
 
 \item{qty}{quantity to add (must be same length as `skus`, or length 1)}
+
+\item{locs}{locations to add (must be same length as `skus`, or length 1)}
 }
 \description{
 Add drop-ship inventory to skuvault

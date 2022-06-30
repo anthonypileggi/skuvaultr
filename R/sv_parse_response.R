@@ -36,6 +36,14 @@ sv_parse_response <- function(response) {
       if ("ShippingCost" %in% names(r))
         tmp[["ShippingCost"]] <- paste(r[["ShippingCost"]][c("s", "a")], collapse = "")
 
+      if ("Context" %in% names(r)) {
+        if (is.null(r[["Context"]])) {
+          tmp[["ContextId"]] <- NA_character_
+        } else {
+          tmp[["ContextId"]] <- r[["Context"]]$ID
+        }
+      }
+
       tmp
     }
   )
