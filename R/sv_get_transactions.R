@@ -47,7 +47,8 @@ sv_get_transactions_7day <- function(start_date = Sys.Date() - 1,
       Quantity = integer(), QuantityBefore = integer(), QuantityAfter = integer(),
       Location = character(), TransactionType = character(),
       TransactionReason = character(), TransactionNote = character(),
-      TransactionDate = Sys.time()[-1]
+      TransactionDate = Sys.time()[-1],
+      ContextId = character()
     )
   } else {
     out <- x %>%
