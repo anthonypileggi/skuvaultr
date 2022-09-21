@@ -30,7 +30,7 @@ sv_cancel_order <- function(saleid) {
   )
 
   # add inventory back into warehouse (if already picked)
-  if (order$status %in% c("ReadyToShip", "Completed")) {
+  if (order$status %in% c("Completed")) {
     out <- picklist %>%
       dplyr::left_join(warehouses, by = "WarehouseCode") %>%
       dplyr::mutate(
